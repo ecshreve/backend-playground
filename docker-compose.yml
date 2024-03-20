@@ -1,0 +1,21 @@
+version: "3.8"
+
+services:  
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: dbuser  
+      POSTGRES_PASSWORD: dbpass  
+      POSTGRES_DB: proddb
+    ports:
+      - "5432:5432"
+    volumes:
+      - proddb_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8888:8080"
+
+volumes:
+  proddb_data:
