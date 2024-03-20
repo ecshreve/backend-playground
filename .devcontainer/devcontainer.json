@@ -16,6 +16,16 @@
 		"ghcr.io/devcontainers/features/go:1": {
 			"version": "1.21"
 		}
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"GitHub.copilot-chat",
+				"GitHub.copilot",
+				"ms-azuretools.vscode-docker",
+				"golang.go"
+			]
+		}
 	}
 
 	// Features to add to the dev container. More info: https://containers.dev/features.

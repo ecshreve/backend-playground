@@ -18,10 +18,23 @@
     cmd = "go test ./..."
 
 ###
+# ent tasks
+###
+[[task]]
+  id = "entgen"
+  description = "Generate ent schema"
+  type = "short"
+  watch = ["ent/schema/*.go"]
+  cmd = """
+    echo "Running ent generation with ent"
+    go generate ./ent
+  """
+
+###
 # dev server
 ###
 [[task]]
   id = "dev"
   type = "long"
-  watch = ["**/*.go"]
+  triggers = ["entgen"]
   cmd = "go run ./cmd/playground"
