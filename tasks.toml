@@ -1,0 +1,27 @@
+###
+# Go tasks
+###
+[[task]]
+  id = "build"
+  type = "short"
+  dependencies = ["generate"]
+  cmd = "go build -o bin/playground ./cmd/playground"
+
+[[task]]
+  id = "generate"
+  type = "short"
+  cmd = "go generate ./..."
+
+[[task]]
+    id = "test"
+    type = "short"
+    cmd = "go test ./..."
+
+###
+# dev server
+###
+[[task]]
+  id = "dev"
+  type = "long"
+  watch = ["**/*.go"]
+  cmd = "go run ./cmd/playground"
