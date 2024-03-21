@@ -6,6 +6,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"playground/ent/todo"
 	"playground/ent/user"
 	"reflect"
 	"sync"
@@ -73,6 +74,7 @@ var (
 func checkColumn(table, column string) error {
 	initCheck.Do(func() {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
+			todo.Table: todo.ValidColumn,
 			user.Table: user.ValidColumn,
 		})
 	})
