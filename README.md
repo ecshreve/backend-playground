@@ -4,30 +4,52 @@ This repo is a playground for backend development.
 
 ## Summary
 
+- VSCode connected to remote host via SSH and the repository is opened in a Docker container for development
+  - Ubuntu 22.04 [devcontainer](https://code.visualstudio.com/docs/devcontainers/containers) with Golang 1.21.8.
+  - Host docker socket accessible from the devcontainer via the docker-from-docker feature.
+- `User` and `Todo` models defined in `ent/schema`, basic CRUD operations generated.
+- Database migrations via Ent [automatic migration](https://entgo.io/docs/versioned/intro#automatic-migration).
+
+## Todo
+
+- [ ] Add an edge between User and Todo
+- [ ] Populate the database with dummy seed data
+- [ ] Generate a GraphQL API with ent
+- [ ] Generate a gRPC service with ent
+- [ ] Look at versioned migrations
+- [ ] Generate a REST API with ent
+- [?] Iterate on the commit message generation script, does it need to be a hook? Should I make that tool's repository public?
+- [?] Iterate on prebuilding the devcontainer image, what's the best way to do that?
+
+## Tools and Commands
+
 - `docker compose up -d` to start the Postgres and Adminer containers
+  - or `run dbdev` to start the Postgres and Adminer containers inside `run` tasks
 - `./setup.sh` to install tools
 - `run dev` to start the server and watch for changes
 - `git commit-gen` to generate a commit message based on the changes staged for commit
 
-## Devcontainer
+### Devcontainer
 
-- Ubuntu 22.04, Postgres 15, Golang 1.21, Docker 24.0.9-1, Docker Compose 2.25.0-1
+- Ubuntu 22.04, Golang 1.21, Docker 24.0.9-1, Docker Compose 2.25.0-1
+- Based on the `base:ubuntu-22.04` devcontainer image: `mcr.microsoft.com/devcontainers/base:jammy`
 
-### Ent
+## Ent
+
 Ent is an entity framework of the Go language developed by Facebook. The aim  of ent is to simplify the process of building and maintaining applications with large and complex data models.
 
 Ent provides a functional API to interact with the database, allowing developers to model any database schema as a Graph of Go structs and automatically generate CRUD (Create, Read, Update, Delete) operations.
 
 [Getting Started](https://entgo.io/docs/getting-started)
 
-#### Operations
+### Operations
 
 - `go run -mod=mod entgo.io/ent/cmd/ent new <MODEL_NAME>` to create a new schema entry
 - `go generate ./ent` to generate the ent code
 
 ## Custom Git Commit Message Hook                                             
                                                                               
-This repository includes a custom Git hook designed to enhance the commit process by automatically generating commit messages based on the changes staged for commit, with a focus on quality and conciseness. Below are the details on how to set up and utilize this hook.
+This repository includes a custom Git hook designed to enhance the commit process by automatically generating commit messages based on the changes staged for commit, with a focus on quality and conciseness. Below are the details on how to set up and utilize this hook. `mods-config.yml` is an example `mods` configuration file.
 
 ### Setup
 
