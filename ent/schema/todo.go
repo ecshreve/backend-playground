@@ -13,7 +13,7 @@ type Todo struct {
 
 func (Todo) Mixin() []ent.Mixin {
 	return []ent.Mixin{
-		TimeMixin{},
+		CommonMixin{},
 	}
 }
 
