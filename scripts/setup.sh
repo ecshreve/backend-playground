@@ -5,3 +5,4 @@
 go install github.com/amonks/run/cmd/run@latest
 go install github.com/charmbracelet/mods@latest
 go install github.com/charmbracelet/glow@latest
+go install github.com/charmbracelet/gum@latest
