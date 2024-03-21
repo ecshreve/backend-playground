@@ -11,23 +11,35 @@ This repo is a playground for backend development.
 - Database migrations via Ent [automatic migration](https://entgo.io/docs/versioned/intro#automatic-migration).
 
 ## Todo
-
-- [ ] Add an edge between User and Todo
-- [ ] Populate the database with dummy seed data
-- [ ] Generate a GraphQL API with ent
 - [ ] Generate a gRPC service with ent
+- [ ] Audit tasks.toml and update the README
+- [ ] Enable GraphQL mutations for User and Todo, write tests
 - [ ] Look at versioned migrations
 - [ ] Generate a REST API with ent
-- [?] Iterate on the commit message generation script, does it need to be a hook? Should I make that tool's repository public?
+- [ ] Think about app configuration, possibly move to a TOML or YAML file
+- [ ] Reimplement commit generator func into a standalone shell script
+	- Remove the script from .githooks, reset git config to default, add configuration option
+		or run task to show setting it as a hook.
+	- Reimplement the script in a standalone shell script, maybe add to PATH?
+	- Add run task for the fancy gum output confirmation
+	- Add alias `gcg` to run the script wherever it ends up
+- [ ] Figure out a way to log / monitor the graphql requests better.
+- [ ] Add custom slog handler with formatting and clors, I have this somewhere just need to find it.
+- [ ] Maybe try an AI static site generator to spin up a quick UI
 - [?] Iterate on prebuilding the devcontainer image, what's the best way to do that?
+---
+- [x] Add an edge between User and Todo
+- [x] Populate the database with dummy seed data
+- [x] Generate a GraphQL API with ent
 
-## Tools and Commands
+## Development Commands
 
 - `docker compose up -d` to start the Postgres and Adminer containers
   - or `run dbdev` to start the Postgres and Adminer containers inside `run` tasks
 - `./setup.sh` to install tools
 - `run dev` to start the server and watch for changes
 - `git commit-gen` to generate a commit message based on the changes staged for commit
+- `go run -mod=mod entgo.io/ent/cmd/ent new <MODEL_NAME>` to generate a new model
 
 ### Devcontainer
 
@@ -42,10 +54,27 @@ Ent provides a functional API to interact with the database, allowing developers
 
 [Getting Started](https://entgo.io/docs/getting-started)
 
-### Operations
 
-- `go run -mod=mod entgo.io/ent/cmd/ent new <MODEL_NAME>` to create a new schema entry
-- `go generate ./ent` to generate the ent code
+## GraphQL
+
+Generate a GraphQL API with `run gqlgen` and then `run gqlserver` to start the server.
+
+`ent/entc.go`
+- Uses the (entql)[https://pkg.go.dev/entgo.io/contrib/entgql] extension to generate a GraphQL schema and resolvers for the Ent models.
+
+`gqlserver/ent.graphql`
+- The generated GraphQL schema file for the Ent models.
+- The schema is defined using the GraphQL Schema Definition Language (SDL).
+
+`gqlserver/resolver.go`
+- The generated GraphQL base Resolver.
+
+`gqlserver/ent.resolvers.go`
+- The generated Ent resolvers that extend the base for the different Ent models.
+
+`gqlserver/gql-generated.go`
+- The generated GraphQL types and interfaces needed to implement the resolvers and server. 
+
 
 ## Custom Git Commit Message Hook                                             
                                                                               

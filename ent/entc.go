@@ -12,19 +12,25 @@ import (
 
 func main() {
 	ex, err := entgql.NewExtension(
-		// Tell Ent to generate a GraphQL schema for
-		// the Ent schema in a file named ent.graphql.
+		// Tell Ent to generate a GraphQL schema for the Ent schema.
 		entgql.WithSchemaGenerator(),
-		entgql.WithSchemaPath("./gqlserver/ent.graphql"),
+
+		// Ent generation will be executed from the project root, so
+		// these paths are relative to the project root.
 		entgql.WithConfigPath("./gqlgen.yml"),
+		entgql.WithSchemaPath("./gqlserver/ent.graphql"),
 		entgql.WithWhereInputs(true),
 	)
 	if err != nil {
 		log.Fatalf("creating entgql extension: %v", err)
 	}
+
+	// Create a list of entc options to pass to entc.Generate.
 	opts := []entc.Option{
 		entc.Extensions(ex),
 	}
+
+	// Run the ent codegen, which will generate the Ent schema and the GraphQL schema.
 	if err := entc.Generate("./ent/schema", &gen.Config{}, opts...); err != nil {
 		log.Fatalf("running ent codegen: %v", err)
 	}
