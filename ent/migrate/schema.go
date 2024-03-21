@@ -37,12 +37,40 @@ var (
 		Columns:    UsersColumns,
 		PrimaryKey: []*schema.Column{UsersColumns[0]},
 	}
+	// TodoUserColumns holds the columns for the "todo_user" table.
+	TodoUserColumns = []*schema.Column{
+		{Name: "todo_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeInt},
+	}
+	// TodoUserTable holds the schema information for the "todo_user" table.
+	TodoUserTable = &schema.Table{
+		Name:       "todo_user",
+		Columns:    TodoUserColumns,
+		PrimaryKey: []*schema.Column{TodoUserColumns[0], TodoUserColumns[1]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "todo_user_todo_id",
+				Columns:    []*schema.Column{TodoUserColumns[0]},
+				RefColumns: []*schema.Column{TodosColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+			{
+				Symbol:     "todo_user_user_id",
+				Columns:    []*schema.Column{TodoUserColumns[1]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.Cascade,
+			},
+		},
+	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		TodosTable,
 		UsersTable,
+		TodoUserTable,
 	}
 )
 
 func init() {
+	TodoUserTable.ForeignKeys[0].RefTable = TodosTable
+	TodoUserTable.ForeignKeys[1].RefTable = UsersTable
 }

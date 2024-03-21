@@ -26,8 +26,29 @@ type Todo struct {
 	// Status holds the value of the "status" field.
 	Status todo.Status `json:"status,omitempty"`
 	// Priority holds the value of the "priority" field.
-	Priority     int `json:"priority,omitempty"`
+	Priority int `json:"priority,omitempty"`
+	// Edges holds the relations/edges for other nodes in the graph.
+	// The values are being populated by the TodoQuery when eager-loading is set.
+	Edges        TodoEdges `json:"edges"`
 	selectValues sql.SelectValues
+}
+
+// TodoEdges holds the relations/edges for other nodes in the graph.
+type TodoEdges struct {
+	// User holds the value of the user edge.
+	User []*User `json:"user,omitempty"`
+	// loadedTypes holds the information for reporting if a
+	// type was loaded (or requested) in eager-loading or not.
+	loadedTypes [1]bool
+}
+
+// UserOrErr returns the User value or an error if the edge
+// was not loaded in eager-loading.
+func (e TodoEdges) UserOrErr() ([]*User, error) {
+	if e.loadedTypes[0] {
+		return e.User, nil
+	}
+	return nil, &NotLoadedError{edge: "user"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -103,6 +124,11 @@ func (t *Todo) assignValues(columns []string, values []any) error {
 // This includes values selected through modifiers, order, etc.
 func (t *Todo) Value(name string) (ent.Value, error) {
 	return t.selectValues.Get(name)
+}
+
+// QueryUser queries the "user" edge of the Todo entity.
+func (t *Todo) QueryUser() *UserQuery {
+	return NewTodoClient(t.config).QueryUser(t)
 }
 
 // Update returns a builder for updating this Todo.

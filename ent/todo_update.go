@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"playground/ent/predicate"
 	"playground/ent/todo"
+	"playground/ent/user"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
@@ -83,9 +84,45 @@ func (tu *TodoUpdate) AddPriority(i int) *TodoUpdate {
 	return tu
 }
 
+// AddUserIDs adds the "user" edge to the User entity by IDs.
+func (tu *TodoUpdate) AddUserIDs(ids ...int) *TodoUpdate {
+	tu.mutation.AddUserIDs(ids...)
+	return tu
+}
+
+// AddUser adds the "user" edges to the User entity.
+func (tu *TodoUpdate) AddUser(u ...*User) *TodoUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return tu.AddUserIDs(ids...)
+}
+
 // Mutation returns the TodoMutation object of the builder.
 func (tu *TodoUpdate) Mutation() *TodoMutation {
 	return tu.mutation
+}
+
+// ClearUser clears all "user" edges to the User entity.
+func (tu *TodoUpdate) ClearUser() *TodoUpdate {
+	tu.mutation.ClearUser()
+	return tu
+}
+
+// RemoveUserIDs removes the "user" edge to User entities by IDs.
+func (tu *TodoUpdate) RemoveUserIDs(ids ...int) *TodoUpdate {
+	tu.mutation.RemoveUserIDs(ids...)
+	return tu
+}
+
+// RemoveUser removes "user" edges to User entities.
+func (tu *TodoUpdate) RemoveUser(u ...*User) *TodoUpdate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return tu.RemoveUserIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -166,6 +203,51 @@ func (tu *TodoUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := tu.mutation.AddedPriority(); ok {
 		_spec.AddField(todo.FieldPriority, field.TypeInt, value)
 	}
+	if tu.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   todo.UserTable,
+			Columns: todo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.RemovedUserIDs(); len(nodes) > 0 && !tu.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   todo.UserTable,
+			Columns: todo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tu.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   todo.UserTable,
+			Columns: todo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
+	}
 	if n, err = sqlgraph.UpdateNodes(ctx, tu.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{todo.Label}
@@ -241,9 +323,45 @@ func (tuo *TodoUpdateOne) AddPriority(i int) *TodoUpdateOne {
 	return tuo
 }
 
+// AddUserIDs adds the "user" edge to the User entity by IDs.
+func (tuo *TodoUpdateOne) AddUserIDs(ids ...int) *TodoUpdateOne {
+	tuo.mutation.AddUserIDs(ids...)
+	return tuo
+}
+
+// AddUser adds the "user" edges to the User entity.
+func (tuo *TodoUpdateOne) AddUser(u ...*User) *TodoUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return tuo.AddUserIDs(ids...)
+}
+
 // Mutation returns the TodoMutation object of the builder.
 func (tuo *TodoUpdateOne) Mutation() *TodoMutation {
 	return tuo.mutation
+}
+
+// ClearUser clears all "user" edges to the User entity.
+func (tuo *TodoUpdateOne) ClearUser() *TodoUpdateOne {
+	tuo.mutation.ClearUser()
+	return tuo
+}
+
+// RemoveUserIDs removes the "user" edge to User entities by IDs.
+func (tuo *TodoUpdateOne) RemoveUserIDs(ids ...int) *TodoUpdateOne {
+	tuo.mutation.RemoveUserIDs(ids...)
+	return tuo
+}
+
+// RemoveUser removes "user" edges to User entities.
+func (tuo *TodoUpdateOne) RemoveUser(u ...*User) *TodoUpdateOne {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return tuo.RemoveUserIDs(ids...)
 }
 
 // Where appends a list predicates to the TodoUpdate builder.
@@ -353,6 +471,51 @@ func (tuo *TodoUpdateOne) sqlSave(ctx context.Context) (_node *Todo, err error) 
 	}
 	if value, ok := tuo.mutation.AddedPriority(); ok {
 		_spec.AddField(todo.FieldPriority, field.TypeInt, value)
+	}
+	if tuo.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   todo.UserTable,
+			Columns: todo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+			},
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.RemovedUserIDs(); len(nodes) > 0 && !tuo.mutation.UserCleared() {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   todo.UserTable,
+			Columns: todo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
+	}
+	if nodes := tuo.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   todo.UserTable,
+			Columns: todo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
 	_node = &Todo{config: tuo.config}
 	_spec.Assign = _node.assignValues

@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"playground/ent/todo"
+	"playground/ent/user"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -80,6 +81,21 @@ func (tc *TodoCreate) SetNillablePriority(i *int) *TodoCreate {
 		tc.SetPriority(*i)
 	}
 	return tc
+}
+
+// AddUserIDs adds the "user" edge to the User entity by IDs.
+func (tc *TodoCreate) AddUserIDs(ids ...int) *TodoCreate {
+	tc.mutation.AddUserIDs(ids...)
+	return tc
+}
+
+// AddUser adds the "user" edges to the User entity.
+func (tc *TodoCreate) AddUser(u ...*User) *TodoCreate {
+	ids := make([]int, len(u))
+	for i := range u {
+		ids[i] = u[i].ID
+	}
+	return tc.AddUserIDs(ids...)
 }
 
 // Mutation returns the TodoMutation object of the builder.
@@ -207,6 +223,22 @@ func (tc *TodoCreate) createSpec() (*Todo, *sqlgraph.CreateSpec) {
 	if value, ok := tc.mutation.Priority(); ok {
 		_spec.SetField(todo.FieldPriority, field.TypeInt, value)
 		_node.Priority = value
+	}
+	if nodes := tc.mutation.UserIDs(); len(nodes) > 0 {
+		edge := &sqlgraph.EdgeSpec{
+			Rel:     sqlgraph.M2M,
+			Inverse: false,
+			Table:   todo.UserTable,
+			Columns: todo.UserPrimaryKey,
+			Bidi:    false,
+			Target: &sqlgraph.EdgeTarget{
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+			},
+		}
+		for _, k := range nodes {
+			edge.Target.Nodes = append(edge.Target.Nodes, k)
+		}
+		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
 }

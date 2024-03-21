@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqlgraph"
 )
 
 const (
@@ -21,8 +22,15 @@ const (
 	FieldName = "name"
 	// FieldEmail holds the string denoting the email field in the database.
 	FieldEmail = "email"
+	// EdgeTodos holds the string denoting the todos edge name in mutations.
+	EdgeTodos = "todos"
 	// Table holds the table name of the user in the database.
 	Table = "users"
+	// TodosTable is the table that holds the todos relation/edge. The primary key declared below.
+	TodosTable = "todo_user"
+	// TodosInverseTable is the table name for the Todo entity.
+	// It exists in this package in order to avoid circular dependency with the "todo" package.
+	TodosInverseTable = "todos"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -33,6 +41,12 @@ var Columns = []string{
 	FieldName,
 	FieldEmail,
 }
+
+var (
+	// TodosPrimaryKey and TodosColumn2 are the table columns denoting the
+	// primary key for the todos relation (M2M).
+	TodosPrimaryKey = []string{"todo_id", "user_id"}
+)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -83,4 +97,25 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByEmail orders the results by the email field.
 func ByEmail(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEmail, opts...).ToFunc()
+}
+
+// ByTodosCount orders the results by todos count.
+func ByTodosCount(opts ...sql.OrderTermOption) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborsCount(s, newTodosStep(), opts...)
+	}
+}
+
+// ByTodos orders the results by todos terms.
+func ByTodos(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
+	return func(s *sql.Selector) {
+		sqlgraph.OrderByNeighborTerms(s, newTodosStep(), append([]sql.OrderTerm{term}, terms...)...)
+	}
+}
+func newTodosStep() *sqlgraph.Step {
+	return sqlgraph.NewStep(
+		sqlgraph.From(Table, FieldID),
+		sqlgraph.To(TodosInverseTable, FieldID),
+		sqlgraph.Edge(sqlgraph.M2M, true, TodosTable, TodosPrimaryKey...),
+	)
 }
