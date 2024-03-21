@@ -15,7 +15,7 @@ import (
 )
 
 func main() {
-	// Start basic HTTP server
+	// Set up a simple HTTP handler
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Hello, playground")
 	})
@@ -26,12 +26,14 @@ func main() {
 		log.Fatalf("failed connecting to postgres: %v", err)
 	}
 	defer client.Close()
+	slog.Info("Connected to database")
 
 	// Run the auto migration tool
 	ctx := context.Background()
 	if err := client.Schema.Create(ctx); err != nil {
 		log.Fatalf("failed creating schema resources: %v", err)
 	}
+	slog.Info("Schema migration complete")
 
 	// Start the server (note: this is a blocking call)
 	slog.Info("Starting server on port 8080")

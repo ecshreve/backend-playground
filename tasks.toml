@@ -57,5 +57,4 @@
   type = "long"
   dependencies = ["dbup"]
   triggers = ["entgen"]
-  watch = ["cmd/playground/*.go"]
   cmd = "go run ./cmd/playground"
