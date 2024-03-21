@@ -4,13 +4,12 @@
 [[task]]
   id = "build"
   type = "short"
-  dependencies = ["generate"]
   cmd = "go build -o bin/playground ./cmd/playground"
 
-[[task]]
-  id = "generate"
-  type = "short"
-  cmd = "go generate ./..."
+# [[task]]
+#   id = "generate"
+#   type = "short"
+#   cmd = "go generate ./..."
 
 [[task]]
     id = "test"
@@ -21,13 +20,30 @@
 # ent tasks
 ###
 [[task]]
+  id = "gen"
+  description = "Run all code generation"
+  type = "short"
+  dependencies = ["entgen", "gqlgen"]
+
+[[task]]
   id = "entgen"
   description = "Generate ent schema"
   type = "short"
-  watch = ["ent/schema/*.go"]
+  watch = ["ent/schema/*.go", "ent/entc.go", "gqlgen.yml"]
   cmd = """
-    echo "Running ent generation with ent"
-    go generate ./ent
+    echo "Running ent generation with entc..."
+    go run -mod=mod ent/entc.go
+  """
+
+[[task]]
+  id = "gqlgen"
+  description = "Generate graphql"
+  type = "short"
+  watch = ["gqlgen.yml"]
+  dependencies = ["entgen"]
+  cmd = """
+    echo "Running gqlgen generation with gqlgen..."
+    go run -mod=mod github.com/99designs/gqlgen
   """
 
 ###
@@ -58,3 +74,17 @@
   dependencies = ["dbup"]
   triggers = ["entgen"]
   cmd = "go run ./cmd/playground"
+
+[[task]]
+  id = "entvizfix"
+  description = "Fix entviz html"
+  type = "short"
+  triggers = ["entgen"]
+  cmd = """
+    echo "Fixing entviz html..."
+    sed -i 's/widthConstraint: 60/widthConstraint: 120/g' ent/schema-viz.html
+    sed -i 's/heightConstraint: 60/heightConstraint: 40/g' ent/schema-viz.html
+    sed -i '/hierarchical: {/,/levelSeparation: 250,/ { 
+  s/enabled: true,/enabled: false,/
+}' ent/schema-viz.html
+  """

@@ -7,7 +7,8 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
-	"playground/ent"
+
+	"github.com/ecshreve/backend-playground/ent"
 
 	_ "github.com/lib/pq"
 
