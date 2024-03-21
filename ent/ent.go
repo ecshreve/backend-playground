@@ -6,14 +6,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"playground/ent/todo"
-	"playground/ent/user"
 	"reflect"
 	"sync"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/ecshreve/backend-playground/ent/todo"
+	"github.com/ecshreve/backend-playground/ent/user"
 )
 
 // ent aliases to avoid import conflicts in user's code.

@@ -5,7 +5,8 @@ package hook
 import (
 	"context"
 	"fmt"
-	"playground/ent"
+
+	"github.com/ecshreve/backend-playground/ent"
 )
 
 // The TodoFunc type is an adapter to allow the use of ordinary

@@ -4,13 +4,13 @@ package enttest
 
 import (
 	"context"
-	"playground/ent"
-	// required by schema hooks.
-	_ "playground/ent/runtime"
 
-	"playground/ent/migrate"
+	"github.com/ecshreve/backend-playground/ent"
+	// required by schema hooks.
+	_ "github.com/ecshreve/backend-playground/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
+	"github.com/ecshreve/backend-playground/ent/migrate"
 )
 
 type (

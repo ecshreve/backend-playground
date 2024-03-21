@@ -4,12 +4,12 @@ package ent
 
 import (
 	"context"
-	"playground/ent/predicate"
-	"playground/ent/user"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ecshreve/backend-playground/ent/predicate"
+	"github.com/ecshreve/backend-playground/ent/user"
 )
 
 // UserDelete is the builder for deleting a User entity.

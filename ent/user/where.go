@@ -3,11 +3,11 @@
 package user
 
 import (
-	"playground/ent/predicate"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/ecshreve/backend-playground/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

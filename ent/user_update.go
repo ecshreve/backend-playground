@@ -6,14 +6,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"playground/ent/predicate"
-	"playground/ent/todo"
-	"playground/ent/user"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ecshreve/backend-playground/ent/predicate"
+	"github.com/ecshreve/backend-playground/ent/todo"
+	"github.com/ecshreve/backend-playground/ent/user"
 )
 
 // UserUpdate is the builder for updating User entities.

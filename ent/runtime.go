@@ -3,10 +3,11 @@
 package ent
 
 import (
-	"playground/ent/schema"
-	"playground/ent/todo"
-	"playground/ent/user"
 	"time"
+
+	"github.com/ecshreve/backend-playground/ent/schema"
+	"github.com/ecshreve/backend-playground/ent/todo"
+	"github.com/ecshreve/backend-playground/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code

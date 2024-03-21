@@ -4,12 +4,12 @@ package ent
 
 import (
 	"fmt"
-	"playground/ent/todo"
 	"strings"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/ecshreve/backend-playground/ent/todo"
 )
 
 // Todo is the model entity for the Todo schema.
@@ -40,6 +40,10 @@ type TodoEdges struct {
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
 	loadedTypes [1]bool
+	// totalCount holds the count of the edges above.
+	totalCount [1]map[string]int
+
+	namedUser map[string][]*User
 }
 
 // UserOrErr returns the User value or an error if the edge
@@ -170,6 +174,30 @@ func (t *Todo) String() string {
 	builder.WriteString(fmt.Sprintf("%v", t.Priority))
 	builder.WriteByte(')')
 	return builder.String()
+}
+
+// NamedUser returns the User named value or an error if the edge was not
+// loaded in eager-loading with this name.
+func (t *Todo) NamedUser(name string) ([]*User, error) {
+	if t.Edges.namedUser == nil {
+		return nil, &NotLoadedError{edge: name}
+	}
+	nodes, ok := t.Edges.namedUser[name]
+	if !ok {
+		return nil, &NotLoadedError{edge: name}
+	}
+	return nodes, nil
+}
+
+func (t *Todo) appendNamedUser(name string, edges ...*User) {
+	if t.Edges.namedUser == nil {
+		t.Edges.namedUser = make(map[string][]*User)
+	}
+	if len(edges) == 0 {
+		t.Edges.namedUser[name] = []*User{}
+	} else {
+		t.Edges.namedUser[name] = append(t.Edges.namedUser[name], edges...)
+	}
 }
 
 // Todos is a parsable slice of Todo.

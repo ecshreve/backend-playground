@@ -9,15 +9,14 @@ import (
 	"log"
 	"reflect"
 
-	"playground/ent/migrate"
-
-	"playground/ent/todo"
-	"playground/ent/user"
+	"github.com/ecshreve/backend-playground/ent/migrate"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/ecshreve/backend-playground/ent/todo"
+	"github.com/ecshreve/backend-playground/ent/user"
 )
 
 // Client is the client that holds all ent builders.
@@ -29,6 +28,8 @@ type Client struct {
 	Todo *TodoClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
+	// additional fields for node api
+	tables tables
 }
 
 // NewClient creates a new client configured with the given options.

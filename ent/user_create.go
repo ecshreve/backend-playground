@@ -6,12 +6,12 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"playground/ent/todo"
-	"playground/ent/user"
 	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ecshreve/backend-playground/ent/todo"
+	"github.com/ecshreve/backend-playground/ent/user"
 )
 
 // UserCreate is the builder for creating a User entity.

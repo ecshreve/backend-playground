@@ -6,14 +6,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"playground/ent/predicate"
-	"playground/ent/todo"
-	"playground/ent/user"
 	"sync"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/ecshreve/backend-playground/ent/predicate"
+	"github.com/ecshreve/backend-playground/ent/todo"
+	"github.com/ecshreve/backend-playground/ent/user"
 )
 
 const (

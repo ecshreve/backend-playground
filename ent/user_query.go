@@ -7,23 +7,26 @@ import (
 	"database/sql/driver"
 	"fmt"
 	"math"
-	"playground/ent/predicate"
-	"playground/ent/todo"
-	"playground/ent/user"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/ecshreve/backend-playground/ent/predicate"
+	"github.com/ecshreve/backend-playground/ent/todo"
+	"github.com/ecshreve/backend-playground/ent/user"
 )
 
 // UserQuery is the builder for querying User entities.
 type UserQuery struct {
 	config
-	ctx        *QueryContext
-	order      []user.OrderOption
-	inters     []Interceptor
-	predicates []predicate.User
-	withTodos  *TodoQuery
+	ctx            *QueryContext
+	order          []user.OrderOption
+	inters         []Interceptor
+	predicates     []predicate.User
+	withTodos      *TodoQuery
+	modifiers      []func(*sql.Selector)
+	loadTotal      []func(context.Context, []*User) error
+	withNamedTodos map[string]*TodoQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -383,6 +386,9 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		node.Edges.loadedTypes = loadedTypes
 		return node.assignValues(columns, values)
 	}
+	if len(uq.modifiers) > 0 {
+		_spec.Modifiers = uq.modifiers
+	}
 	for i := range hooks {
 		hooks[i](ctx, _spec)
 	}
@@ -396,6 +402,18 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadTodos(ctx, query, nodes,
 			func(n *User) { n.Edges.Todos = []*Todo{} },
 			func(n *User, e *Todo) { n.Edges.Todos = append(n.Edges.Todos, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for name, query := range uq.withNamedTodos {
+		if err := uq.loadTodos(ctx, query, nodes,
+			func(n *User) { n.appendNamedTodos(name) },
+			func(n *User, e *Todo) { n.appendNamedTodos(name, e) }); err != nil {
+			return nil, err
+		}
+	}
+	for i := range uq.loadTotal {
+		if err := uq.loadTotal[i](ctx, nodes); err != nil {
 			return nil, err
 		}
 	}
@@ -466,6 +484,9 @@ func (uq *UserQuery) loadTodos(ctx context.Context, query *TodoQuery, nodes []*U
 
 func (uq *UserQuery) sqlCount(ctx context.Context) (int, error) {
 	_spec := uq.querySpec()
+	if len(uq.modifiers) > 0 {
+		_spec.Modifiers = uq.modifiers
+	}
 	_spec.Node.Columns = uq.ctx.Fields
 	if len(uq.ctx.Fields) > 0 {
 		_spec.Unique = uq.ctx.Unique != nil && *uq.ctx.Unique
@@ -543,6 +564,20 @@ func (uq *UserQuery) sqlQuery(ctx context.Context) *sql.Selector {
 		selector.Limit(*limit)
 	}
 	return selector
+}
+
+// WithNamedTodos tells the query-builder to eager-load the nodes that are connected to the "todos"
+// edge with the given name. The optional arguments are used to configure the query builder of the edge.
+func (uq *UserQuery) WithNamedTodos(name string, opts ...func(*TodoQuery)) *UserQuery {
+	query := (&TodoClient{config: uq.config}).Query()
+	for _, opt := range opts {
+		opt(query)
+	}
+	if uq.withNamedTodos == nil {
+		uq.withNamedTodos = make(map[string]*TodoQuery)
+	}
+	uq.withNamedTodos[name] = query
+	return uq
 }
 
 // UserGroupBy is the group-by builder for User entities.
