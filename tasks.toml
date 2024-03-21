@@ -31,10 +31,31 @@
   """
 
 ###
+# docker tasks
+###
+[[task]]
+  id = "dbup"
+  type = "long"
+  cmd = "docker compose up postgres"
+
+[[task]]
+  id = "adminer"
+  type = "long"
+  dependencies = ["dbup"]
+  cmd = "docker compose up adminer"
+
+[[task]]
+  id = "dbdown"
+  type = "short"
+  cmd = "docker compose down"
+
+###
 # dev server
 ###
 [[task]]
   id = "dev"
   type = "long"
+  dependencies = ["dbup"]
   triggers = ["entgen"]
+  watch = ["cmd/playground/*.go"]
   cmd = "go run ./cmd/playground"
