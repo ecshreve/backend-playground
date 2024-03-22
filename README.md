@@ -19,17 +19,17 @@ This repo is a playground for backend development.
 - [ ] Generate a REST API with ent
 - [ ] Audit tasks.toml and update the README
 - [ ] Think about app configuration, possibly move to a TOML or YAML file
-- [ ] Reimplement commit generator func into a standalone shell script
-	- Remove the script from .githooks, reset git config to default, add configuration option
-		or run task to show setting it as a hook.
-	- Reimplement the script in a standalone shell script, maybe add to PATH?
-	- Add run task for the fancy gum output confirmation
-	- Add alias `gcg` to run the script wherever it ends up
 - [ ] Figure out a way to log / monitor the graphql requests better.
 - [ ] Add custom slog handler with formatting and clors, I have this somewhere just need to find it.
 - [ ] Maybe try an AI static site generator to spin up a quick UI
 - [?] Iterate on prebuilding the devcontainer image, what's the best way to do that?
 ---
+- [x] Reimplement commit generator func into a standalone shell script
+	- [x] Remove the script from .githooks, reset git config to default
+	- ~~add configuration option or run task to show setting it as a hook.~~
+	- [x] Reimplement the script in a standalone shell script, add scripts folder to PATH
+	- ~~Add run task for the fancy gum output confirmation~~
+	- ~~Add alias `gcg` to run the script wherever it ends up~~
 - [x] Audit tasks.toml and update the README
 - [x] Add an edge between User and Todo
 - [x] Populate the database with dummy seed data

@@ -18,10 +18,10 @@ if [ -z "$OPENAI_API_KEY" ]; then
 fi
 
 # Check if mods config matches the file in the repo
-if ! diff ~/.config/mods/mods.yml ./scripts/mods-config.yml > /dev/null; then
+if ! diff ~/.config/mods/mods.yml mods-config.yml > /dev/null; then
     echo "mods.yml does not match the file in the repo"
     cp ~/.config/mods/mods.yml ~/.config/mods/mods.yml.bak
-    cp ./scripts/mods-config.yml ~/.config/mods/mods.yml
+    cp mods-config.yml ~/.config/mods/mods.yml
     echo "mods.yml updated"
 else
     echo "mods.yml up to date"
