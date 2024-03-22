@@ -12,10 +12,12 @@ This repo is a playground for backend development.
 
 ## Todo
 - [ ] Generate a gRPC service with ent
-- [ ] Audit tasks.toml and update the README
+- [ ] Add a `ProfileImage` field on the `User` model
+    - [ ] Spin up LocalStack S3 for image storage
 - [ ] Enable GraphQL mutations for User and Todo, write tests
 - [ ] Look at versioned migrations
 - [ ] Generate a REST API with ent
+- [ ] Audit tasks.toml and update the README
 - [ ] Think about app configuration, possibly move to a TOML or YAML file
 - [ ] Reimplement commit generator func into a standalone shell script
 	- Remove the script from .githooks, reset git config to default, add configuration option
@@ -28,6 +30,7 @@ This repo is a playground for backend development.
 - [ ] Maybe try an AI static site generator to spin up a quick UI
 - [?] Iterate on prebuilding the devcontainer image, what's the best way to do that?
 ---
+- [x] Audit tasks.toml and update the README
 - [x] Add an edge between User and Todo
 - [x] Populate the database with dummy seed data
 - [x] Generate a GraphQL API with ent

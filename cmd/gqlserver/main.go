@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"log/slog"
@@ -86,6 +87,9 @@ func main() {
 
 	// Set up simple HTTP handler
 	srv := handler.NewDefaultServer(playgen.NewSchema(client))
+	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprint(w, "Hello, playground")
+	})
 	http.Handle("/", logit(playground.Handler("backend-playground", "/query")))
 	http.Handle("/query", logit(srv)) // Wrap the srv handler with the logRequestBody function
 

@@ -1,15 +1,12 @@
 ###
-# Go tasks
+# go tasks
 ###
 [[task]]
   id = "build"
   type = "short"
-  cmd = "go build -o bin/playground ./cmd/playground"
-
-# [[task]]
-#   id = "generate"
-#   type = "short"
-#   cmd = "go generate ./..."
+  cmd = """
+  go build -o bin/gqlserver ./cmd/gqlserver
+  """
 
 [[task]]
     id = "test"
@@ -17,19 +14,13 @@
     cmd = "go test ./..."
 
 ###
-# ent tasks
+# code generation tasks
 ###
-[[task]]
-  id = "gen"
-  description = "Run all code generation"
-  type = "short"
-  dependencies = ["entgen", "gqlgen"]
-
 [[task]]
   id = "entgen"
   description = "Generate ent schema"
   type = "short"
-  watch = ["ent/schema/*.go", "ent/entc.go", "gqlgen.yml"]
+  watch = ["ent/schema/*.go", "ent/entc.go"]
   cmd = """
     echo "Running ent generation with entc..."
     go run -mod=mod ent/entc.go
@@ -39,18 +30,21 @@
   id = "gqlgen"
   description = "Generate graphql"
   type = "short"
-  watch = ["gqlgen.yml"]
+  watch = ["gqlgen.yml", "gqlserver/*.graphql"]
   dependencies = ["entgen"]
   cmd = """
     echo "Running gqlgen generation with gqlgen..."
     go run -mod=mod github.com/99designs/gqlgen
   """
 
+###
+# server tasks
+###
 [[task]]
   id = "gqlserver"
   description = "Run graphql server"
   type = "long"
-  dependencies = ["entgen", "gqlgen"]
+  triggers = ["gqlgen"]
   watch = ["cmd/gqlserver/*.go"]
   cmd = "go run ./cmd/gqlserver"
 
@@ -59,19 +53,22 @@
 ###
 [[task]]
   id = "dbup"
-  type = "long"
-  cmd = "docker compose up postgres"
-
-[[task]]
-  id = "adminer"
-  type = "long"
-  dependencies = ["dbup"]
-  cmd = "docker compose up adminer"
+  description = "Start database containers with docker compose"
+  type = "short"
+  cmd = "docker compose up -d"
 
 [[task]]
   id = "dbdown"
+  description = "Stop database containers with docker compose"
   type = "short"
   cmd = "docker compose down"
+
+[[task]]
+  id = "dblogs"
+  description = "Tail logs from database containers"
+  type = "long"
+  dependencies = ["dbup"]
+  cmd = "docker compose logs -f -n 20"
 
 ###
 # dev server
@@ -79,10 +76,13 @@
 [[task]]
   id = "dev"
   type = "long"
-  dependencies = ["dbup"]
-  triggers = ["entgen"]
-  cmd = "go run ./cmd/playground"
+  dependencies = ["dblogs", "gqlserver"]
+  cmd = """
+  echo 'Running dev server...'
+  while true; do sleep 1; done
+  """
 
+######
 [[task]]
   id = "entvizfix"
   description = "Fix entviz html"
