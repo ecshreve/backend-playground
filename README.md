@@ -11,7 +11,6 @@ This repo is a playground for backend development.
 - Database migrations via Ent [automatic migration](https://entgo.io/docs/versioned/intro#automatic-migration).
 
 ## Roadmap
-- [ ] Add logging middleware to grpcserver
 - [ ] Audit `dev` run task and record demo
 - [ ] Add a `ProfileImage` field on the `User` model
     - [ ] Spin up LocalStack S3 for image storage
@@ -25,6 +24,8 @@ This repo is a playground for backend development.
 - [ ] Maybe try an AI static site generator to spin up a quick UI
 - [?] Iterate on prebuilding the devcontainer image, what's the best way to do that?
 ---
+- [x] Write logs to file and configure Loki for log viewing
+- [x] Add logging middleware to grpcserver
 - [x] Generate a gRPC service with ent
 - [x] Reimplement commit generator func into a standalone shell script
 	- [x] Remove the script from .githooks, reset git config to default
