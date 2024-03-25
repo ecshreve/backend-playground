@@ -39,6 +39,7 @@ func main() {
 		logging.WithLogOnEvents(logging.StartCall, logging.FinishCall, logging.PayloadReceived, logging.PayloadSent),
 	}
 
+	// TODO: switch back to postgres
 	// Initialize an ent client.
 	client, err := ent.Open("sqlite3", "file:dev.db?cache=shared&_fk=1")
 	if err != nil {
