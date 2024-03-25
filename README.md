@@ -4,26 +4,34 @@ This repo is a playground for backend development.
 
 ## Summary
 
-- VSCode connected to remote host via SSH and the repository is opened in a Docker container for development
-  - Ubuntu 22.04 [devcontainer](https://code.visualstudio.com/docs/devcontainers/containers) with Golang 1.21.8.
-  - Host docker socket accessible from the devcontainer via the docker-from-docker feature.
+- VSCode connected to remote host via SSH with the repository opened in a Docker container for development.
+- Alternate environment on Github Codespaces using the same devcontainer configuration.
+	- Ubuntu 22.04 [devcontainer](https://code.visualstudio.com/docs/devcontainers/containers) with Golang 1.22, Docker 24.0.9-1, Docker Compose 2.25.0-1
+	- Based on the `base:ubuntu-22.04` devcontainer image: `mcr.microsoft.com/devcontainers/base:jammy`
+	- Host docker socket accessible from the devcontainer via the docker-outside-of-docker feature.
 - `User` and `Todo` models defined in `ent/schema`, basic CRUD operations generated.
 - Database migrations via Ent [automatic migration](https://entgo.io/docs/versioned/intro#automatic-migration).
+- GraphQL API generated from the Ent schema using the [entgql](https://entgo.io/contrib/entgql) extension.
+- gRPC API generated from the Ent schema using the [entgrpc](https://entgo.io/contrib/entproto) extension.
 
 ## Roadmap
-- [ ] Audit `dev` run task and record demo
+- [ ] Enable GraphQL mutations for User and Todo, write tests
+- [ ] Move grpcserver back over to Postgres
 - [ ] Add a `ProfileImage` field on the `User` model
     - [ ] Spin up LocalStack S3 for image storage
-- [ ] Enable GraphQL mutations for User and Todo, write tests
+- [ ] Add Codespaces notes
 - [ ] Look at versioned migrations
-- [ ] Generate a REST API with ent
 - [ ] Audit tasks.toml and update the README
-- [ ] Think about app configuration, possibly move to a TOML or YAML file
+- [ ] Rework app configuration, move external configs to folder, and app config to a TOML or YAML file
 - [ ] Figure out a way to log / monitor the graphql requests better.
-- [ ] Add custom slog handler with formatting and clors, I have this somewhere just need to find it.
+- [ ] Add custom slog handler with formatting and colors, I have this somewhere just need to find it.
 - [ ] Maybe try an AI static site generator to spin up a quick UI
-- [?] Iterate on prebuilding the devcontainer image, what's the best way to do that?
+- [ ] Generate a REST API with ent
+- [?] Deploy sandboxed gqlserver
+- [?] Dockerize everything
+- [?] Iterate on prebuilding the devcontainer image, what's the best way to do that
 ---
+- [x] Audit `dev` run task and record demo
 - [x] Write logs to file and configure Loki for log viewing
 - [x] Add logging middleware to grpcserver
 - [x] Generate a gRPC service with ent
@@ -40,17 +48,23 @@ This repo is a playground for backend development.
 
 ## Development Commands
 
-- `docker compose up -d` to start the Postgres and Adminer containers
-  - or `run dbdev` to start the Postgres and Adminer containers inside `run` tasks
-- `./setup.sh` to install tools
-- `run dev` to start the server and watch for changes
-- `git commit-gen` to generate a commit message based on the changes staged for commit
+- `docker compose up -d` to start the docker services (Postgres, Adminer, Loki, Grafana, ...)
+- `./scripts/setup.sh` to install tools (TODO: move this into devcontainer setup)
+- `./scripts/gencom.sh` to generate a commit message based on the changes staged for commit
 - `go run -mod=mod entgo.io/ent/cmd/ent new <MODEL_NAME>` to generate a new model
+- `run dev` to start the dev server and watch for changes
 
-### Devcontainer
+### `run`
 
-- Ubuntu 22.04, Golang 1.21, Docker 24.0.9-1, Docker Compose 2.25.0-1
-- Based on the `base:ubuntu-22.04` devcontainer image: `mcr.microsoft.com/devcontainers/base:jammy`
+This project uses `run` as a general task executor. Poke around the `tasks.toml` file and checkout
+the [documentation](https://github.com/amonks/run) for more details. In my environment do
+`run dev` and leave it running in the background to handle regenerating code and restarting
+services when needed.
+
+Here's a screenshot of the `run dev` output:
+
+<img src="assets/run.png" width="600" alt="run">
+
 
 ## Ent
 
@@ -63,7 +77,7 @@ Ent provides a functional API to interact with the database, allowing developers
 
 ## GraphQL
 
-Generate a GraphQL API with `run gqlgen` and then `run gqlserver` to start the server.
+A GraphQL schema is generated from the ent schema. Then `go` code for a GraphQL server is generated.
 
 `ent/entc.go`
 - Uses the (entql)[https://pkg.go.dev/entgo.io/contrib/entgql] extension to generate a GraphQL schema and resolvers for the Ent models.
@@ -80,6 +94,14 @@ Generate a GraphQL API with `run gqlgen` and then `run gqlserver` to start the s
 
 `gqlserver/gql-generated.go`
 - The generated GraphQL types and interfaces needed to implement the resolvers and server. 
+
+
+## gRPC
+
+<!-- TODO: add docs -->
+
+Protobuf definitions are generated from the ent schema. Then `go` code for a gRPC server is generated.
+
 
 
 ## Git Commit Message Script
