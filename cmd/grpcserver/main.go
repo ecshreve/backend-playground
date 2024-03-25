@@ -8,11 +8,13 @@ import (
 	"net"
 	"os"
 
+	"entgo.io/ent/dialect"
 	"github.com/ecshreve/backend-playground/ent"
 	"github.com/ecshreve/backend-playground/ent/proto/entpb"
 	"github.com/grpc-ecosystem/go-grpc-middleware/v2/interceptors/logging"
 	"google.golang.org/grpc"
 
+	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -39,13 +41,26 @@ func main() {
 		logging.WithLogOnEvents(logging.StartCall, logging.FinishCall, logging.PayloadReceived, logging.PayloadSent),
 	}
 
-	// TODO: switch back to postgres
-	// Initialize an ent client.
-	client, err := ent.Open("sqlite3", "file:dev.db?cache=shared&_fk=1")
-	if err != nil {
-		log.Fatalf("failed opening connection to sqlite: %v", err)
+	host := os.Getenv("POSTGRES_HOST")
+	port := os.Getenv("POSTGRES_PORT")
+	user := os.Getenv("POSTGRES_USER")
+	pass := os.Getenv("POSTGRES_PASS")
+	dbname := os.Getenv("POSTGRES_DB")
+
+	// TODO: include missing env vars in error message
+	// or just do this better
+	if host == "" || port == "" || user == "" || pass == "" || dbname == "" {
+		slog.Error("Missing required environment variables")
+		os.Exit(1)
 	}
-	defer client.Close()
+
+	// Connect to the database
+	postgresConnStr := "host=" + host + " port=" + port + " user=" + user + " dbname=" + dbname + " password=" + pass + " sslmode=disable"
+	client, err := ent.Open(dialect.Postgres, postgresConnStr)
+	if err != nil {
+		log.Fatal(err)
+	}
+	slog.Info("Connected to database at", "host", host, "port", port)
 
 	// Run the migration tool (creating tables, etc).
 	if err := client.Schema.Create(context.Background()); err != nil {

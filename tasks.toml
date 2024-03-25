@@ -1,6 +1,18 @@
-###
-# go tasks
-###
+# ------------------------------------------------------------------------------
+#    Dev Server
+# ------------------------------------------------------------------------------
+[[task]]
+  id = "dev"
+  type = "long"
+  dependencies = ["grpcserver", "gqlserver"]
+  cmd = """
+  echo 'Running dev server...'
+  while true; do sleep 1; done
+  """
+
+# ------------------------------------------------------------------------------
+#     Go Tasks
+# ------------------------------------------------------------------------------
 [[task]]
   id = "build:gql"
   type = "short"
@@ -24,9 +36,9 @@
     type = "short"
     cmd = "go test ./..."
 
-###
-# code generation tasks
-###
+# ------------------------------------------------------------------------------
+#     Code Generation Tasks
+# ------------------------------------------------------------------------------
 [[task]]
   id = "entgen"
   description = "Generate ent schema"
@@ -57,9 +69,9 @@
     go generate ./ent/proto/...
   """
 
-###
-# server tasks
-###
+# ------------------------------------------------------------------------------
+#   Application Servers
+# ------------------------------------------------------------------------------
 [[task]]
   id = "gqlserver"
   description = "Run graphql server"
@@ -88,15 +100,57 @@
   type = "short"
   cmd = "go run ./cmd/grpcclient/main.go"
 
-
-###
-# dev server
-###
+# ------------------------------------------------------------------------------
+#     Database Migration Tasks
+# ------------------------------------------------------------------------------
 [[task]]
-  id = "dev"
-  type = "long"
-  dependencies = ["grpcserver", "gqlserver"]
+  id = "db-diff"
+  type = "short"
+  description = "Generate a migration"
   cmd = """
-  echo 'Running dev server...'
-  while true; do sleep 1; done
+  atlas migrate diff manual \
+    --dir "file://ent/migrate/migrations" \
+    --to "ent://ent/schema" \
+    --dev-url "docker://postgres/15/test?search_path=public"
+  """
+
+[[task]]
+  id = "db-apply"
+  type = "short"
+  description = "Apply a migration"
+  dependencies = ["db-lint"]
+  cmd = """
+  atlas migrate apply \
+    --dir "file://ent/migrate/migrations" \
+    --url $POSTGRES_URL
+  """
+
+[[task]]
+  id = "db-lint"
+  type = "short"
+  dependencies = ["db-validate"]
+  cmd = """
+  atlas migrate lint \
+    --dir "file://ent/migrate/migrations" \
+    --dev-url "docker://postgres/15/test?search_path=public" \
+    --latest 1
+  """
+
+[[task]]
+  id = "db-validate"
+  type = "short"
+  cmd = """
+  atlas migrate validate \
+    --dir "file://ent/migrate/migrations" \
+    --dev-url "docker://postgres/15/test?search_path=public"
+  """
+
+[[task]]
+  id = "db-clean"
+  type = "short"
+  description = "Clean the database schema, drop all tables and types"
+  cmd = """
+  atlas schema clean \
+    --url $POSTGRES_URL \
+    --auto-approve
   """
