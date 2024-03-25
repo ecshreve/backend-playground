@@ -2,10 +2,17 @@
 # go tasks
 ###
 [[task]]
-  id = "build"
+  id = "build:gql"
   type = "short"
   cmd = """
   go build -o bin/gqlserver ./cmd/gqlserver
+  """
+
+[[task]]
+  id = "build:grpc"
+  type = "short"
+  cmd = """
+  go build -o bin/grpcserver ./cmd/grpcserver
   """
 
 [[task]]
@@ -35,6 +42,16 @@
   cmd = """
     echo "Running gqlgen generation with gqlgen..."
     go run -mod=mod github.com/99designs/gqlgen
+  """
+
+[[task]]
+  id = "protogen"
+  description = "Generate protos"
+  type = "short"
+  dependencies = ["entgen"]
+  cmd = """
+    echo "Running proto generation..."
+    go generate ./ent/proto/...
   """
 
 ###

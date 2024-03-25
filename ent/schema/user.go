@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"entgo.io/contrib/entproto"
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -20,8 +21,14 @@ func (User) Mixin() []ent.Mixin {
 // Fields of the User.
 func (User) Fields() []ent.Field {
 	return []ent.Field{
-		field.String("name").NotEmpty(),
-		field.String("email").NotEmpty(),
+		field.String("name").NotEmpty().
+			Annotations(
+				entproto.Field(4),
+			),
+		field.String("email").NotEmpty().
+			Annotations(
+				entproto.Field(5),
+			),
 	}
 }
 
@@ -29,6 +36,9 @@ func (User) Fields() []ent.Field {
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("todos", Todo.Type).
-			Ref("user"),
+			Ref("user").
+			Annotations(
+				entproto.Field(6),
+			),
 	}
 }
