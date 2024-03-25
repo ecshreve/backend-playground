@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"entgo.io/contrib/entgql"
+	"entgo.io/contrib/entproto"
 	"entgo.io/ent/entc"
 	"entgo.io/ent/entc/gen"
 )
@@ -25,9 +26,14 @@ func main() {
 		log.Fatalf("creating entgql extension: %v", err)
 	}
 
+	epex, err := entproto.NewExtension(
+		entproto.WithProtoDir("./ent/proto"),
+	)
+
 	// Create a list of entc options to pass to entc.Generate.
 	opts := []entc.Option{
 		entc.Extensions(ex),
+		entc.Extensions(epex),
 	}
 
 	// Run the ent codegen, which will generate the Ent schema and the GraphQL schema.
