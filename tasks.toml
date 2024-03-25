@@ -61,10 +61,17 @@
   id = "gqlserver"
   description = "Run graphql server"
   type = "long"
-  triggers = ["gqlgen"]
+  dependencies = ["gqlgen"]
   watch = ["cmd/gqlserver/*.go"]
-  cmd = "go run ./cmd/gqlserver"
+  cmd = "go run ./cmd/gqlserver/main.go"
 
+[[task]]
+  id = "grpcserver"
+  description = "Run grpcserver server"
+  type = "long"
+  dependencies = ["protogen"]
+  watch = ["cmd/grpcserver/**/*.go"]
+  cmd = "go run ./cmd/grpcserver/server/server.go"
 ###
 # docker tasks
 ###
@@ -93,7 +100,7 @@
 [[task]]
   id = "dev"
   type = "long"
-  dependencies = ["dblogs", "gqlserver"]
+  dependencies = ["gqlserver", "grpcserver"]
   cmd = """
   echo 'Running dev server...'
   while true; do sleep 1; done

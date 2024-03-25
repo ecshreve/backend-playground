@@ -13,13 +13,9 @@ import (
 
 func main() {
 	ex, err := entgql.NewExtension(
-		// Tell Ent to generate a GraphQL schema for the Ent schema.
-		entgql.WithSchemaGenerator(),
-
-		// Ent generation will be executed from the project root, so
-		// these paths are relative to the project root.
 		entgql.WithConfigPath("./gqlgen.yml"),
-		entgql.WithSchemaPath("./gqlserver/ent.graphql"),
+		entgql.WithSchemaGenerator(),
+		entgql.WithSchemaPath("./gql_generated/ent.graphql"),
 		entgql.WithWhereInputs(true),
 	)
 	if err != nil {

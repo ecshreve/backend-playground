@@ -1,4 +1,4 @@
-package playgen
+package gql_generated
 
 import (
 	"github.com/ecshreve/backend-playground/ent"
