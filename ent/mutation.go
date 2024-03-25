@@ -703,20 +703,21 @@ func (m *TodoMutation) ResetEdge(name string) error {
 // UserMutation represents an operation that mutates the User nodes in the graph.
 type UserMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	created_at    *time.Time
-	updated_at    *time.Time
-	name          *string
-	email         *string
-	clearedFields map[string]struct{}
-	todos         map[int]struct{}
-	removedtodos  map[int]struct{}
-	clearedtodos  bool
-	done          bool
-	oldValue      func(context.Context) (*User, error)
-	predicates    []predicate.User
+	op                  Op
+	typ                 string
+	id                  *int
+	created_at          *time.Time
+	updated_at          *time.Time
+	name                *string
+	email               *string
+	profile_picture_url *string
+	clearedFields       map[string]struct{}
+	todos               map[int]struct{}
+	removedtodos        map[int]struct{}
+	clearedtodos        bool
+	done                bool
+	oldValue            func(context.Context) (*User, error)
+	predicates          []predicate.User
 }
 
 var _ ent.Mutation = (*UserMutation)(nil)
@@ -961,6 +962,55 @@ func (m *UserMutation) ResetEmail() {
 	m.email = nil
 }
 
+// SetProfilePictureURL sets the "profile_picture_url" field.
+func (m *UserMutation) SetProfilePictureURL(s string) {
+	m.profile_picture_url = &s
+}
+
+// ProfilePictureURL returns the value of the "profile_picture_url" field in the mutation.
+func (m *UserMutation) ProfilePictureURL() (r string, exists bool) {
+	v := m.profile_picture_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProfilePictureURL returns the old "profile_picture_url" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldProfilePictureURL(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProfilePictureURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProfilePictureURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProfilePictureURL: %w", err)
+	}
+	return oldValue.ProfilePictureURL, nil
+}
+
+// ClearProfilePictureURL clears the value of the "profile_picture_url" field.
+func (m *UserMutation) ClearProfilePictureURL() {
+	m.profile_picture_url = nil
+	m.clearedFields[user.FieldProfilePictureURL] = struct{}{}
+}
+
+// ProfilePictureURLCleared returns if the "profile_picture_url" field was cleared in this mutation.
+func (m *UserMutation) ProfilePictureURLCleared() bool {
+	_, ok := m.clearedFields[user.FieldProfilePictureURL]
+	return ok
+}
+
+// ResetProfilePictureURL resets all changes to the "profile_picture_url" field.
+func (m *UserMutation) ResetProfilePictureURL() {
+	m.profile_picture_url = nil
+	delete(m.clearedFields, user.FieldProfilePictureURL)
+}
+
 // AddTodoIDs adds the "todos" edge to the Todo entity by ids.
 func (m *UserMutation) AddTodoIDs(ids ...int) {
 	if m.todos == nil {
@@ -1049,7 +1099,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 4)
+	fields := make([]string, 0, 5)
 	if m.created_at != nil {
 		fields = append(fields, user.FieldCreatedAt)
 	}
@@ -1061,6 +1111,9 @@ func (m *UserMutation) Fields() []string {
 	}
 	if m.email != nil {
 		fields = append(fields, user.FieldEmail)
+	}
+	if m.profile_picture_url != nil {
+		fields = append(fields, user.FieldProfilePictureURL)
 	}
 	return fields
 }
@@ -1078,6 +1131,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case user.FieldEmail:
 		return m.Email()
+	case user.FieldProfilePictureURL:
+		return m.ProfilePictureURL()
 	}
 	return nil, false
 }
@@ -1095,6 +1150,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldName(ctx)
 	case user.FieldEmail:
 		return m.OldEmail(ctx)
+	case user.FieldProfilePictureURL:
+		return m.OldProfilePictureURL(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -1132,6 +1189,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEmail(v)
 		return nil
+	case user.FieldProfilePictureURL:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProfilePictureURL(v)
+		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
 }
@@ -1161,7 +1225,11 @@ func (m *UserMutation) AddField(name string, value ent.Value) error {
 // ClearedFields returns all nullable fields that were cleared during this
 // mutation.
 func (m *UserMutation) ClearedFields() []string {
-	return nil
+	var fields []string
+	if m.FieldCleared(user.FieldProfilePictureURL) {
+		fields = append(fields, user.FieldProfilePictureURL)
+	}
+	return fields
 }
 
 // FieldCleared returns a boolean indicating if a field with the given name was
@@ -1174,6 +1242,11 @@ func (m *UserMutation) FieldCleared(name string) bool {
 // ClearField clears the value of the field with the given name. It returns an
 // error if the field is not defined in the schema.
 func (m *UserMutation) ClearField(name string) error {
+	switch name {
+	case user.FieldProfilePictureURL:
+		m.ClearProfilePictureURL()
+		return nil
+	}
 	return fmt.Errorf("unknown User nullable field %s", name)
 }
 
@@ -1192,6 +1265,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldEmail:
 		m.ResetEmail()
+		return nil
+	case user.FieldProfilePictureURL:
+		m.ResetProfilePictureURL()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)

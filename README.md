@@ -16,11 +16,9 @@ This repo is a playground for backend development.
 
 ## Roadmap
 - [ ] Enable GraphQL mutations for User and Todo, write tests
-- [ ] Move grpcserver back over to Postgres
 - [ ] Add a `ProfileImage` field on the `User` model
     - [ ] Spin up LocalStack S3 for image storage
 - [ ] Add Codespaces notes
-- [ ] Look at versioned migrations
 - [ ] Audit tasks.toml and update the README
 - [ ] Rework app configuration, move external configs to folder, and app config to a TOML or YAML file
 - [ ] Figure out a way to log / monitor the graphql requests better.
@@ -31,6 +29,8 @@ This repo is a playground for backend development.
 - [?] Dockerize everything
 - [?] Iterate on prebuilding the devcontainer image, what's the best way to do that
 ---
+- [x] Look at versioned migrations
+- [x] Move grpcserver back over to Postgres
 - [x] Audit `dev` run task and record demo
 - [x] Write logs to file and configure Loki for log viewing
 - [x] Add logging middleware to grpcserver
@@ -74,6 +74,19 @@ Ent provides a functional API to interact with the database, allowing developers
 
 [Getting Started](https://entgo.io/docs/getting-started)
 
+### Database Schema and Migrations
+
+The database schema is defined in the `ent/schema` directory. Ent uses the schema to generate Go code for the database models and automatically create migrations.
+
+To make a change to the database schema, take the following steps:
+
+1. Update the schema in `ent/schema`.
+2. `run entgen` to generate the new schema.
+3. `run gqlgen` to generate graphql changes.
+4. `run protogen` to generate grpc changes.
+5. `run db-diff` to create a new migration file.
+6. `run db-lint` to validate and lint the migration.
+6. `run db-apply` to apply the migration.
 
 ## GraphQL
 

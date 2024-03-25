@@ -118,7 +118,6 @@
   id = "db-apply"
   type = "short"
   description = "Apply a migration"
-  dependencies = ["db-lint"]
   cmd = """
   atlas migrate apply \
     --dir "file://ent/migrate/migrations" \

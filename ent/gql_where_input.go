@@ -399,6 +399,23 @@ type UserWhereInput struct {
 	EmailEqualFold    *string  `json:"emailEqualFold,omitempty"`
 	EmailContainsFold *string  `json:"emailContainsFold,omitempty"`
 
+	// "profile_picture_url" field predicates.
+	ProfilePictureURL             *string  `json:"profilePictureURL,omitempty"`
+	ProfilePictureURLNEQ          *string  `json:"profilePictureURLNEQ,omitempty"`
+	ProfilePictureURLIn           []string `json:"profilePictureURLIn,omitempty"`
+	ProfilePictureURLNotIn        []string `json:"profilePictureURLNotIn,omitempty"`
+	ProfilePictureURLGT           *string  `json:"profilePictureURLGT,omitempty"`
+	ProfilePictureURLGTE          *string  `json:"profilePictureURLGTE,omitempty"`
+	ProfilePictureURLLT           *string  `json:"profilePictureURLLT,omitempty"`
+	ProfilePictureURLLTE          *string  `json:"profilePictureURLLTE,omitempty"`
+	ProfilePictureURLContains     *string  `json:"profilePictureURLContains,omitempty"`
+	ProfilePictureURLHasPrefix    *string  `json:"profilePictureURLHasPrefix,omitempty"`
+	ProfilePictureURLHasSuffix    *string  `json:"profilePictureURLHasSuffix,omitempty"`
+	ProfilePictureURLIsNil        bool     `json:"profilePictureURLIsNil,omitempty"`
+	ProfilePictureURLNotNil       bool     `json:"profilePictureURLNotNil,omitempty"`
+	ProfilePictureURLEqualFold    *string  `json:"profilePictureURLEqualFold,omitempty"`
+	ProfilePictureURLContainsFold *string  `json:"profilePictureURLContainsFold,omitempty"`
+
 	// "todos" edge predicates.
 	HasTodos     *bool             `json:"hasTodos,omitempty"`
 	HasTodosWith []*TodoWhereInput `json:"hasTodosWith,omitempty"`
@@ -624,6 +641,51 @@ func (i *UserWhereInput) P() (predicate.User, error) {
 	}
 	if i.EmailContainsFold != nil {
 		predicates = append(predicates, user.EmailContainsFold(*i.EmailContainsFold))
+	}
+	if i.ProfilePictureURL != nil {
+		predicates = append(predicates, user.ProfilePictureURLEQ(*i.ProfilePictureURL))
+	}
+	if i.ProfilePictureURLNEQ != nil {
+		predicates = append(predicates, user.ProfilePictureURLNEQ(*i.ProfilePictureURLNEQ))
+	}
+	if len(i.ProfilePictureURLIn) > 0 {
+		predicates = append(predicates, user.ProfilePictureURLIn(i.ProfilePictureURLIn...))
+	}
+	if len(i.ProfilePictureURLNotIn) > 0 {
+		predicates = append(predicates, user.ProfilePictureURLNotIn(i.ProfilePictureURLNotIn...))
+	}
+	if i.ProfilePictureURLGT != nil {
+		predicates = append(predicates, user.ProfilePictureURLGT(*i.ProfilePictureURLGT))
+	}
+	if i.ProfilePictureURLGTE != nil {
+		predicates = append(predicates, user.ProfilePictureURLGTE(*i.ProfilePictureURLGTE))
+	}
+	if i.ProfilePictureURLLT != nil {
+		predicates = append(predicates, user.ProfilePictureURLLT(*i.ProfilePictureURLLT))
+	}
+	if i.ProfilePictureURLLTE != nil {
+		predicates = append(predicates, user.ProfilePictureURLLTE(*i.ProfilePictureURLLTE))
+	}
+	if i.ProfilePictureURLContains != nil {
+		predicates = append(predicates, user.ProfilePictureURLContains(*i.ProfilePictureURLContains))
+	}
+	if i.ProfilePictureURLHasPrefix != nil {
+		predicates = append(predicates, user.ProfilePictureURLHasPrefix(*i.ProfilePictureURLHasPrefix))
+	}
+	if i.ProfilePictureURLHasSuffix != nil {
+		predicates = append(predicates, user.ProfilePictureURLHasSuffix(*i.ProfilePictureURLHasSuffix))
+	}
+	if i.ProfilePictureURLIsNil {
+		predicates = append(predicates, user.ProfilePictureURLIsNil())
+	}
+	if i.ProfilePictureURLNotNil {
+		predicates = append(predicates, user.ProfilePictureURLNotNil())
+	}
+	if i.ProfilePictureURLEqualFold != nil {
+		predicates = append(predicates, user.ProfilePictureURLEqualFold(*i.ProfilePictureURLEqualFold))
+	}
+	if i.ProfilePictureURLContainsFold != nil {
+		predicates = append(predicates, user.ProfilePictureURLContainsFold(*i.ProfilePictureURLContainsFold))
 	}
 
 	if i.HasTodos != nil {

@@ -259,6 +259,7 @@ type User implements Node {
   updatedAt: Time!
   name: String!
   email: String!
+  profilePictureURL: String
   todos: [Todo!]
 }
 """
@@ -364,6 +365,24 @@ input UserWhereInput {
   emailHasSuffix: String
   emailEqualFold: String
   emailContainsFold: String
+  """
+  profile_picture_url field predicates
+  """
+  profilePictureURL: String
+  profilePictureURLNEQ: String
+  profilePictureURLIn: [String!]
+  profilePictureURLNotIn: [String!]
+  profilePictureURLGT: String
+  profilePictureURLGTE: String
+  profilePictureURLLT: String
+  profilePictureURLLTE: String
+  profilePictureURLContains: String
+  profilePictureURLHasPrefix: String
+  profilePictureURLHasSuffix: String
+  profilePictureURLIsNil: Boolean
+  profilePictureURLNotNil: Boolean
+  profilePictureURLEqualFold: String
+  profilePictureURLContainsFold: String
   """
   todos edge predicates
   """

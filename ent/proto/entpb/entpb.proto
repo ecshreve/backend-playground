@@ -7,6 +7,8 @@ import "google/protobuf/empty.proto";
 
 import "google/protobuf/timestamp.proto";
 
+import "google/protobuf/wrappers.proto";
+
 option go_package = "github.com/ecshreve/backend-playground/ent/proto/entpb";
 
 message Todo {
@@ -98,7 +100,9 @@ message User {
 
   string email = 5;
 
-  repeated Todo todos = 6;
+  google.protobuf.StringValue profile_picture_url = 6;
+
+  repeated Todo todos = 7;
 }
 
 message CreateUserRequest {

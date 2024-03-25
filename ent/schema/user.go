@@ -29,6 +29,12 @@ func (User) Fields() []ent.Field {
 			Annotations(
 				entproto.Field(5),
 			),
+		field.String("profile_picture_url").
+			Optional().
+			Nillable().
+			Annotations(
+				entproto.Field(6),
+			),
 	}
 }
 
@@ -38,7 +44,7 @@ func (User) Edges() []ent.Edge {
 		edge.From("todos", Todo.Type).
 			Ref("user").
 			Annotations(
-				entproto.Field(6),
+				entproto.Field(7),
 			),
 	}
 }

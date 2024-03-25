@@ -16,6 +16,7 @@ import (
 	status "google.golang.org/grpc/status"
 	emptypb "google.golang.org/protobuf/types/known/emptypb"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
+	wrapperspb "google.golang.org/protobuf/types/known/wrapperspb"
 	strconv "strconv"
 )
 
@@ -43,6 +44,10 @@ func toProtoUser(e *ent.User) (*User, error) {
 	v.Id = id
 	name := e.Name
 	v.Name = name
+	if e.ProfilePictureURL != nil {
+		profile_picture_url := wrapperspb.String(*e.ProfilePictureURL)
+		v.ProfilePictureUrl = profile_picture_url
+	}
 	updated_at := timestamppb.New(e.UpdatedAt)
 	v.UpdatedAt = updated_at
 	for _, edg := range e.Edges.Todos {
@@ -132,6 +137,10 @@ func (svc *UserService) Update(ctx context.Context, req *UpdateUserRequest) (*Us
 	m.SetEmail(userEmail)
 	userName := user.GetName()
 	m.SetName(userName)
+	if user.GetProfilePictureUrl() != nil {
+		userProfilePictureURL := user.GetProfilePictureUrl().GetValue()
+		m.SetProfilePictureURL(userProfilePictureURL)
+	}
 	userUpdatedAt := runtime.ExtractTime(user.GetUpdatedAt())
 	m.SetUpdatedAt(userUpdatedAt)
 	for _, item := range user.GetTodos() {
@@ -278,6 +287,10 @@ func (svc *UserService) createBuilder(user *User) (*ent.UserCreate, error) {
 	m.SetEmail(userEmail)
 	userName := user.GetName()
 	m.SetName(userName)
+	if user.GetProfilePictureUrl() != nil {
+		userProfilePictureURL := user.GetProfilePictureUrl().GetValue()
+		m.SetProfilePictureURL(userProfilePictureURL)
+	}
 	userUpdatedAt := runtime.ExtractTime(user.GetUpdatedAt())
 	m.SetUpdatedAt(userUpdatedAt)
 	for _, item := range user.GetTodos() {

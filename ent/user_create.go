@@ -61,6 +61,20 @@ func (uc *UserCreate) SetEmail(s string) *UserCreate {
 	return uc
 }
 
+// SetProfilePictureURL sets the "profile_picture_url" field.
+func (uc *UserCreate) SetProfilePictureURL(s string) *UserCreate {
+	uc.mutation.SetProfilePictureURL(s)
+	return uc
+}
+
+// SetNillableProfilePictureURL sets the "profile_picture_url" field if the given value is not nil.
+func (uc *UserCreate) SetNillableProfilePictureURL(s *string) *UserCreate {
+	if s != nil {
+		uc.SetProfilePictureURL(*s)
+	}
+	return uc
+}
+
 // AddTodoIDs adds the "todos" edge to the Todo entity by IDs.
 func (uc *UserCreate) AddTodoIDs(ids ...int) *UserCreate {
 	uc.mutation.AddTodoIDs(ids...)
@@ -186,6 +200,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.Email(); ok {
 		_spec.SetField(user.FieldEmail, field.TypeString, value)
 		_node.Email = value
+	}
+	if value, ok := uc.mutation.ProfilePictureURL(); ok {
+		_spec.SetField(user.FieldProfilePictureURL, field.TypeString, value)
+		_node.ProfilePictureURL = &value
 	}
 	if nodes := uc.mutation.TodosIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

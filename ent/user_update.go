@@ -63,6 +63,26 @@ func (uu *UserUpdate) SetNillableEmail(s *string) *UserUpdate {
 	return uu
 }
 
+// SetProfilePictureURL sets the "profile_picture_url" field.
+func (uu *UserUpdate) SetProfilePictureURL(s string) *UserUpdate {
+	uu.mutation.SetProfilePictureURL(s)
+	return uu
+}
+
+// SetNillableProfilePictureURL sets the "profile_picture_url" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableProfilePictureURL(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetProfilePictureURL(*s)
+	}
+	return uu
+}
+
+// ClearProfilePictureURL clears the value of the "profile_picture_url" field.
+func (uu *UserUpdate) ClearProfilePictureURL() *UserUpdate {
+	uu.mutation.ClearProfilePictureURL()
+	return uu
+}
+
 // AddTodoIDs adds the "todos" edge to the Todo entity by IDs.
 func (uu *UserUpdate) AddTodoIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddTodoIDs(ids...)
@@ -176,6 +196,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.Email(); ok {
 		_spec.SetField(user.FieldEmail, field.TypeString, value)
 	}
+	if value, ok := uu.mutation.ProfilePictureURL(); ok {
+		_spec.SetField(user.FieldProfilePictureURL, field.TypeString, value)
+	}
+	if uu.mutation.ProfilePictureURLCleared() {
+		_spec.ClearField(user.FieldProfilePictureURL, field.TypeString)
+	}
 	if uu.mutation.TodosCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
@@ -272,6 +298,26 @@ func (uuo *UserUpdateOne) SetNillableEmail(s *string) *UserUpdateOne {
 	if s != nil {
 		uuo.SetEmail(*s)
 	}
+	return uuo
+}
+
+// SetProfilePictureURL sets the "profile_picture_url" field.
+func (uuo *UserUpdateOne) SetProfilePictureURL(s string) *UserUpdateOne {
+	uuo.mutation.SetProfilePictureURL(s)
+	return uuo
+}
+
+// SetNillableProfilePictureURL sets the "profile_picture_url" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableProfilePictureURL(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetProfilePictureURL(*s)
+	}
+	return uuo
+}
+
+// ClearProfilePictureURL clears the value of the "profile_picture_url" field.
+func (uuo *UserUpdateOne) ClearProfilePictureURL() *UserUpdateOne {
+	uuo.mutation.ClearProfilePictureURL()
 	return uuo
 }
 
@@ -417,6 +463,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if value, ok := uuo.mutation.Email(); ok {
 		_spec.SetField(user.FieldEmail, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.ProfilePictureURL(); ok {
+		_spec.SetField(user.FieldProfilePictureURL, field.TypeString, value)
+	}
+	if uuo.mutation.ProfilePictureURLCleared() {
+		_spec.ClearField(user.FieldProfilePictureURL, field.TypeString)
 	}
 	if uuo.mutation.TodosCleared() {
 		edge := &sqlgraph.EdgeSpec{

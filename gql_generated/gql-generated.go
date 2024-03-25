@@ -85,12 +85,13 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		CreatedAt func(childComplexity int) int
-		Email     func(childComplexity int) int
-		ID        func(childComplexity int) int
-		Name      func(childComplexity int) int
-		Todos     func(childComplexity int) int
-		UpdatedAt func(childComplexity int) int
+		CreatedAt         func(childComplexity int) int
+		Email             func(childComplexity int) int
+		ID                func(childComplexity int) int
+		Name              func(childComplexity int) int
+		ProfilePictureURL func(childComplexity int) int
+		Todos             func(childComplexity int) int
+		UpdatedAt         func(childComplexity int) int
 	}
 
 	UserConnection struct {
@@ -318,6 +319,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.User.Name(childComplexity), true
+
+	case "User.profilePictureURL":
+		if e.complexity.User.ProfilePictureURL == nil {
+			break
+		}
+
+		return e.complexity.User.ProfilePictureURL(childComplexity), true
 
 	case "User.todos":
 		if e.complexity.User.Todos == nil {
@@ -1506,6 +1514,8 @@ func (ec *executionContext) fieldContext_Todo_user(ctx context.Context, field gr
 				return ec.fieldContext_User_name(ctx, field)
 			case "email":
 				return ec.fieldContext_User_email(ctx, field)
+			case "profilePictureURL":
+				return ec.fieldContext_User_profilePictureURL(ctx, field)
 			case "todos":
 				return ec.fieldContext_User_todos(ctx, field)
 			}
@@ -1981,6 +1991,47 @@ func (ec *executionContext) fieldContext_User_email(ctx context.Context, field g
 	return fc, nil
 }
 
+func (ec *executionContext) _User_profilePictureURL(ctx context.Context, field graphql.CollectedField, obj *ent.User) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_User_profilePictureURL(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.ProfilePictureURL, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.(*string)
+	fc.Result = res
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_User_profilePictureURL(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "User",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _User_todos(ctx context.Context, field graphql.CollectedField, obj *ent.User) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_User_todos(ctx, field)
 	if err != nil {
@@ -2229,6 +2280,8 @@ func (ec *executionContext) fieldContext_UserEdge_node(ctx context.Context, fiel
 				return ec.fieldContext_User_name(ctx, field)
 			case "email":
 				return ec.fieldContext_User_email(ctx, field)
+			case "profilePictureURL":
+				return ec.fieldContext_User_profilePictureURL(ctx, field)
 			case "todos":
 				return ec.fieldContext_User_todos(ctx, field)
 			}
@@ -4460,7 +4513,7 @@ func (ec *executionContext) unmarshalInputUserWhereInput(ctx context.Context, ob
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "email", "emailNEQ", "emailIn", "emailNotIn", "emailGT", "emailGTE", "emailLT", "emailLTE", "emailContains", "emailHasPrefix", "emailHasSuffix", "emailEqualFold", "emailContainsFold", "hasTodos", "hasTodosWith"}
+	fieldsInOrder := [...]string{"not", "and", "or", "id", "idNEQ", "idIn", "idNotIn", "idGT", "idGTE", "idLT", "idLTE", "createdAt", "createdAtNEQ", "createdAtIn", "createdAtNotIn", "createdAtGT", "createdAtGTE", "createdAtLT", "createdAtLTE", "updatedAt", "updatedAtNEQ", "updatedAtIn", "updatedAtNotIn", "updatedAtGT", "updatedAtGTE", "updatedAtLT", "updatedAtLTE", "name", "nameNEQ", "nameIn", "nameNotIn", "nameGT", "nameGTE", "nameLT", "nameLTE", "nameContains", "nameHasPrefix", "nameHasSuffix", "nameEqualFold", "nameContainsFold", "email", "emailNEQ", "emailIn", "emailNotIn", "emailGT", "emailGTE", "emailLT", "emailLTE", "emailContains", "emailHasPrefix", "emailHasSuffix", "emailEqualFold", "emailContainsFold", "profilePictureURL", "profilePictureURLNEQ", "profilePictureURLIn", "profilePictureURLNotIn", "profilePictureURLGT", "profilePictureURLGTE", "profilePictureURLLT", "profilePictureURLLTE", "profilePictureURLContains", "profilePictureURLHasPrefix", "profilePictureURLHasSuffix", "profilePictureURLIsNil", "profilePictureURLNotNil", "profilePictureURLEqualFold", "profilePictureURLContainsFold", "hasTodos", "hasTodosWith"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -4838,6 +4891,111 @@ func (ec *executionContext) unmarshalInputUserWhereInput(ctx context.Context, ob
 				return it, err
 			}
 			it.EmailContainsFold = data
+		case "profilePictureURL":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURL"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURL = data
+		case "profilePictureURLNEQ":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLNEQ"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLNEQ = data
+		case "profilePictureURLIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLIn = data
+		case "profilePictureURLNotIn":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLNotIn"))
+			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLNotIn = data
+		case "profilePictureURLGT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLGT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLGT = data
+		case "profilePictureURLGTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLGTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLGTE = data
+		case "profilePictureURLLT":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLLT"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLLT = data
+		case "profilePictureURLLTE":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLLTE"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLLTE = data
+		case "profilePictureURLContains":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLContains"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLContains = data
+		case "profilePictureURLHasPrefix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLHasPrefix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLHasPrefix = data
+		case "profilePictureURLHasSuffix":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLHasSuffix"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLHasSuffix = data
+		case "profilePictureURLIsNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLIsNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLIsNil = data
+		case "profilePictureURLNotNil":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLNotNil"))
+			data, err := ec.unmarshalOBoolean2bool(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLNotNil = data
+		case "profilePictureURLEqualFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLEqualFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLEqualFold = data
+		case "profilePictureURLContainsFold":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("profilePictureURLContainsFold"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.ProfilePictureURLContainsFold = data
 		case "hasTodos":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("hasTodos"))
 			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
@@ -5288,6 +5446,8 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			if out.Values[i] == graphql.Null {
 				atomic.AddUint32(&out.Invalids, 1)
 			}
+		case "profilePictureURL":
+			out.Values[i] = ec._User_profilePictureURL(ctx, field, obj)
 		case "todos":
 			field := field
 
