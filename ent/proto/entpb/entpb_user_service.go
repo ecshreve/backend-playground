@@ -36,6 +36,10 @@ func NewUserService(client *ent.Client) *UserService {
 // toProtoUser transforms the ent type to the pb type
 func toProtoUser(e *ent.User) (*User, error) {
 	v := &User{}
+	if e.AvatarImageURL != nil {
+		avatar_image_url := wrapperspb.String(*e.AvatarImageURL)
+		v.AvatarImageUrl = avatar_image_url
+	}
 	created_at := timestamppb.New(e.CreatedAt)
 	v.CreatedAt = created_at
 	email := e.Email
@@ -44,10 +48,6 @@ func toProtoUser(e *ent.User) (*User, error) {
 	v.Id = id
 	name := e.Name
 	v.Name = name
-	if e.ProfilePictureURL != nil {
-		profile_picture_url := wrapperspb.String(*e.ProfilePictureURL)
-		v.ProfilePictureUrl = profile_picture_url
-	}
 	updated_at := timestamppb.New(e.UpdatedAt)
 	v.UpdatedAt = updated_at
 	for _, edg := range e.Edges.Todos {
@@ -133,14 +133,14 @@ func (svc *UserService) Update(ctx context.Context, req *UpdateUserRequest) (*Us
 	user := req.GetUser()
 	userID := int(user.GetId())
 	m := svc.client.User.UpdateOneID(userID)
+	if user.GetAvatarImageUrl() != nil {
+		userAvatarImageURL := user.GetAvatarImageUrl().GetValue()
+		m.SetAvatarImageURL(userAvatarImageURL)
+	}
 	userEmail := user.GetEmail()
 	m.SetEmail(userEmail)
 	userName := user.GetName()
 	m.SetName(userName)
-	if user.GetProfilePictureUrl() != nil {
-		userProfilePictureURL := user.GetProfilePictureUrl().GetValue()
-		m.SetProfilePictureURL(userProfilePictureURL)
-	}
 	userUpdatedAt := runtime.ExtractTime(user.GetUpdatedAt())
 	m.SetUpdatedAt(userUpdatedAt)
 	for _, item := range user.GetTodos() {
@@ -281,16 +281,16 @@ func (svc *UserService) BatchCreate(ctx context.Context, req *BatchCreateUsersRe
 
 func (svc *UserService) createBuilder(user *User) (*ent.UserCreate, error) {
 	m := svc.client.User.Create()
+	if user.GetAvatarImageUrl() != nil {
+		userAvatarImageURL := user.GetAvatarImageUrl().GetValue()
+		m.SetAvatarImageURL(userAvatarImageURL)
+	}
 	userCreatedAt := runtime.ExtractTime(user.GetCreatedAt())
 	m.SetCreatedAt(userCreatedAt)
 	userEmail := user.GetEmail()
 	m.SetEmail(userEmail)
 	userName := user.GetName()
 	m.SetName(userName)
-	if user.GetProfilePictureUrl() != nil {
-		userProfilePictureURL := user.GetProfilePictureUrl().GetValue()
-		m.SetProfilePictureURL(userProfilePictureURL)
-	}
 	userUpdatedAt := runtime.ExtractTime(user.GetUpdatedAt())
 	m.SetUpdatedAt(userUpdatedAt)
 	for _, item := range user.GetTodos() {

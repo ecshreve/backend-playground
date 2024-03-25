@@ -29,7 +29,7 @@ func (User) Fields() []ent.Field {
 			Annotations(
 				entproto.Field(5),
 			),
-		field.String("profile_picture_url").
+		field.String("avatar_image_url").
 			Optional().
 			Nillable().
 			Annotations(

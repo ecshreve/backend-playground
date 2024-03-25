@@ -63,23 +63,23 @@ func (uu *UserUpdate) SetNillableEmail(s *string) *UserUpdate {
 	return uu
 }
 
-// SetProfilePictureURL sets the "profile_picture_url" field.
-func (uu *UserUpdate) SetProfilePictureURL(s string) *UserUpdate {
-	uu.mutation.SetProfilePictureURL(s)
+// SetAvatarImageURL sets the "avatar_image_url" field.
+func (uu *UserUpdate) SetAvatarImageURL(s string) *UserUpdate {
+	uu.mutation.SetAvatarImageURL(s)
 	return uu
 }
 
-// SetNillableProfilePictureURL sets the "profile_picture_url" field if the given value is not nil.
-func (uu *UserUpdate) SetNillableProfilePictureURL(s *string) *UserUpdate {
+// SetNillableAvatarImageURL sets the "avatar_image_url" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableAvatarImageURL(s *string) *UserUpdate {
 	if s != nil {
-		uu.SetProfilePictureURL(*s)
+		uu.SetAvatarImageURL(*s)
 	}
 	return uu
 }
 
-// ClearProfilePictureURL clears the value of the "profile_picture_url" field.
-func (uu *UserUpdate) ClearProfilePictureURL() *UserUpdate {
-	uu.mutation.ClearProfilePictureURL()
+// ClearAvatarImageURL clears the value of the "avatar_image_url" field.
+func (uu *UserUpdate) ClearAvatarImageURL() *UserUpdate {
+	uu.mutation.ClearAvatarImageURL()
 	return uu
 }
 
@@ -196,11 +196,11 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := uu.mutation.Email(); ok {
 		_spec.SetField(user.FieldEmail, field.TypeString, value)
 	}
-	if value, ok := uu.mutation.ProfilePictureURL(); ok {
-		_spec.SetField(user.FieldProfilePictureURL, field.TypeString, value)
+	if value, ok := uu.mutation.AvatarImageURL(); ok {
+		_spec.SetField(user.FieldAvatarImageURL, field.TypeString, value)
 	}
-	if uu.mutation.ProfilePictureURLCleared() {
-		_spec.ClearField(user.FieldProfilePictureURL, field.TypeString)
+	if uu.mutation.AvatarImageURLCleared() {
+		_spec.ClearField(user.FieldAvatarImageURL, field.TypeString)
 	}
 	if uu.mutation.TodosCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -301,23 +301,23 @@ func (uuo *UserUpdateOne) SetNillableEmail(s *string) *UserUpdateOne {
 	return uuo
 }
 
-// SetProfilePictureURL sets the "profile_picture_url" field.
-func (uuo *UserUpdateOne) SetProfilePictureURL(s string) *UserUpdateOne {
-	uuo.mutation.SetProfilePictureURL(s)
+// SetAvatarImageURL sets the "avatar_image_url" field.
+func (uuo *UserUpdateOne) SetAvatarImageURL(s string) *UserUpdateOne {
+	uuo.mutation.SetAvatarImageURL(s)
 	return uuo
 }
 
-// SetNillableProfilePictureURL sets the "profile_picture_url" field if the given value is not nil.
-func (uuo *UserUpdateOne) SetNillableProfilePictureURL(s *string) *UserUpdateOne {
+// SetNillableAvatarImageURL sets the "avatar_image_url" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableAvatarImageURL(s *string) *UserUpdateOne {
 	if s != nil {
-		uuo.SetProfilePictureURL(*s)
+		uuo.SetAvatarImageURL(*s)
 	}
 	return uuo
 }
 
-// ClearProfilePictureURL clears the value of the "profile_picture_url" field.
-func (uuo *UserUpdateOne) ClearProfilePictureURL() *UserUpdateOne {
-	uuo.mutation.ClearProfilePictureURL()
+// ClearAvatarImageURL clears the value of the "avatar_image_url" field.
+func (uuo *UserUpdateOne) ClearAvatarImageURL() *UserUpdateOne {
+	uuo.mutation.ClearAvatarImageURL()
 	return uuo
 }
 
@@ -464,11 +464,11 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	if value, ok := uuo.mutation.Email(); ok {
 		_spec.SetField(user.FieldEmail, field.TypeString, value)
 	}
-	if value, ok := uuo.mutation.ProfilePictureURL(); ok {
-		_spec.SetField(user.FieldProfilePictureURL, field.TypeString, value)
+	if value, ok := uuo.mutation.AvatarImageURL(); ok {
+		_spec.SetField(user.FieldAvatarImageURL, field.TypeString, value)
 	}
-	if uuo.mutation.ProfilePictureURLCleared() {
-		_spec.ClearField(user.FieldProfilePictureURL, field.TypeString)
+	if uuo.mutation.AvatarImageURLCleared() {
+		_spec.ClearField(user.FieldAvatarImageURL, field.TypeString)
 	}
 	if uuo.mutation.TodosCleared() {
 		edge := &sqlgraph.EdgeSpec{

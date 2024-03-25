@@ -100,7 +100,7 @@ message User {
 
   string email = 5;
 
-  google.protobuf.StringValue profile_picture_url = 6;
+  google.protobuf.StringValue avatar_image_url = 6;
 
   repeated Todo todos = 7;
 }

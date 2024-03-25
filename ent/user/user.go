@@ -22,8 +22,8 @@ const (
 	FieldName = "name"
 	// FieldEmail holds the string denoting the email field in the database.
 	FieldEmail = "email"
-	// FieldProfilePictureURL holds the string denoting the profile_picture_url field in the database.
-	FieldProfilePictureURL = "profile_picture_url"
+	// FieldAvatarImageURL holds the string denoting the avatar_image_url field in the database.
+	FieldAvatarImageURL = "avatar_image_url"
 	// EdgeTodos holds the string denoting the todos edge name in mutations.
 	EdgeTodos = "todos"
 	// Table holds the table name of the user in the database.
@@ -42,7 +42,7 @@ var Columns = []string{
 	FieldUpdatedAt,
 	FieldName,
 	FieldEmail,
-	FieldProfilePictureURL,
+	FieldAvatarImageURL,
 }
 
 var (
@@ -102,9 +102,9 @@ func ByEmail(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEmail, opts...).ToFunc()
 }
 
-// ByProfilePictureURL orders the results by the profile_picture_url field.
-func ByProfilePictureURL(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldProfilePictureURL, opts...).ToFunc()
+// ByAvatarImageURL orders the results by the avatar_image_url field.
+func ByAvatarImageURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAvatarImageURL, opts...).ToFunc()
 }
 
 // ByTodosCount orders the results by todos count.

@@ -68,25 +68,17 @@ Here's a screenshot of the `run dev` output:
 
 ## Ent
 
-Ent is an entity framework of the Go language developed by Facebook. The aim  of ent is to simplify the process of building and maintaining applications with large and complex data models.
-
-Ent provides a functional API to interact with the database, allowing developers to model any database schema as a Graph of Go structs and automatically generate CRUD (Create, Read, Update, Delete) operations.
-
-[Getting Started](https://entgo.io/docs/getting-started)
+Ent is a Go ORM that generates database models and migrations from a schema. It is used to define the database schema and generate Go code for the models. Additional extensions are used in this project to generate a GraphQL API and gRPC service from the schema.
 
 ### Database Schema and Migrations
 
-The database schema is defined in the `ent/schema` directory. Ent uses the schema to generate Go code for the database models and automatically create migrations.
+The database schema is defined in the `ent/schema` directory. Ent uses the schema to generate Go code for the database models and create migrations.
 
 To make a change to the database schema, take the following steps:
 
 1. Update the schema in `ent/schema`.
-2. `run entgen` to generate the new schema.
-3. `run gqlgen` to generate graphql changes.
-4. `run protogen` to generate grpc changes.
-5. `run db-diff` to create a new migration file.
-6. `run db-lint` to validate and lint the migration.
-6. `run db-apply` to apply the migration.
+2. `run db-migrate` to generate all code and create a new migration.
+3. `run db-apply` to lint and apply the migration.
 
 ## GraphQL
 

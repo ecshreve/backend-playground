@@ -163,10 +163,10 @@ func (u *UserQuery) collectField(ctx context.Context, opCtx *graphql.OperationCo
 				selectedFields = append(selectedFields, user.FieldEmail)
 				fieldSeen[user.FieldEmail] = struct{}{}
 			}
-		case "profilePictureURL":
-			if _, ok := fieldSeen[user.FieldProfilePictureURL]; !ok {
-				selectedFields = append(selectedFields, user.FieldProfilePictureURL)
-				fieldSeen[user.FieldProfilePictureURL] = struct{}{}
+		case "avatarImageURL":
+			if _, ok := fieldSeen[user.FieldAvatarImageURL]; !ok {
+				selectedFields = append(selectedFields, user.FieldAvatarImageURL)
+				fieldSeen[user.FieldAvatarImageURL] = struct{}{}
 			}
 		case "id":
 		case "__typename":

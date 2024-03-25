@@ -61,16 +61,16 @@ func (uc *UserCreate) SetEmail(s string) *UserCreate {
 	return uc
 }
 
-// SetProfilePictureURL sets the "profile_picture_url" field.
-func (uc *UserCreate) SetProfilePictureURL(s string) *UserCreate {
-	uc.mutation.SetProfilePictureURL(s)
+// SetAvatarImageURL sets the "avatar_image_url" field.
+func (uc *UserCreate) SetAvatarImageURL(s string) *UserCreate {
+	uc.mutation.SetAvatarImageURL(s)
 	return uc
 }
 
-// SetNillableProfilePictureURL sets the "profile_picture_url" field if the given value is not nil.
-func (uc *UserCreate) SetNillableProfilePictureURL(s *string) *UserCreate {
+// SetNillableAvatarImageURL sets the "avatar_image_url" field if the given value is not nil.
+func (uc *UserCreate) SetNillableAvatarImageURL(s *string) *UserCreate {
 	if s != nil {
-		uc.SetProfilePictureURL(*s)
+		uc.SetAvatarImageURL(*s)
 	}
 	return uc
 }
@@ -201,9 +201,9 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 		_spec.SetField(user.FieldEmail, field.TypeString, value)
 		_node.Email = value
 	}
-	if value, ok := uc.mutation.ProfilePictureURL(); ok {
-		_spec.SetField(user.FieldProfilePictureURL, field.TypeString, value)
-		_node.ProfilePictureURL = &value
+	if value, ok := uc.mutation.AvatarImageURL(); ok {
+		_spec.SetField(user.FieldAvatarImageURL, field.TypeString, value)
+		_node.AvatarImageURL = &value
 	}
 	if nodes := uc.mutation.TodosIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

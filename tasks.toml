@@ -40,6 +40,12 @@
 #     Code Generation Tasks
 # ------------------------------------------------------------------------------
 [[task]]
+  id = "genall"
+  description = "Generate all code"
+  type = "short"
+  dependencies = ["entgen", "gqlgen", "protogen"]
+
+[[task]]
   id = "entgen"
   description = "Generate ent schema"
   type = "short"
@@ -104,9 +110,10 @@
 #     Database Migration Tasks
 # ------------------------------------------------------------------------------
 [[task]]
-  id = "db-diff"
+  id = "db-migrate"
+  description = "Generate all changes and create a new migration"
   type = "short"
-  description = "Generate a migration"
+  dependencies = ["genall"]
   cmd = """
   atlas migrate diff manual \
     --dir "file://ent/migrate/migrations" \
@@ -118,10 +125,22 @@
   id = "db-apply"
   type = "short"
   description = "Apply a migration"
+  dependencies = ["db-lint"]
   cmd = """
   atlas migrate apply \
     --dir "file://ent/migrate/migrations" \
     --url $POSTGRES_URL
+  """
+
+[[task]]
+  id = "db-diff"
+  type = "short"
+  description = "Generate a migration without generating new ent schemas"
+  cmd = """
+  atlas migrate diff manual \
+    --dir "file://ent/migrate/migrations" \
+    --to "ent://ent/schema" \
+    --dev-url "docker://postgres/15/test?search_path=public"
   """
 
 [[task]]
