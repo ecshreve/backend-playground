@@ -1,16 +1,16 @@
 schema:
-  - ./gqlserver/*.graphql
+  - ./gql_generated/*.graphql
 
 exec:
-  dir: ./gqlserver/
-  filename: ./gqlserver/gql-generated.go
-  package: playgen
+  dir: ./gql_generated/
+  filename: ./gql_generated/gql-generated.go
+  package: gql_generated
 
 resolver:
   # Tell gqlgen to generate resolvers next to the schema file.
   layout: follow-schema
-  dir: ./gqlserver/
-  package: playgen
+  dir: ./gql_generated/
+  package: gql_generated
 
 # gqlgen will search for any type names in the schema in the generated
 # ent package. If they match it will use them, otherwise it will new ones.

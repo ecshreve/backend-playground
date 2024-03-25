@@ -1,4 +1,4 @@
-package playgen
+package gql_generated
 
 // This file will be automatically regenerated based on the schema, any resolver implementations
 // will be copied through when generating and any unknown code will be moved to the end.
@@ -23,12 +23,14 @@ func (r *queryResolver) Nodes(ctx context.Context, ids []int) ([]ent.Noder, erro
 
 // Todos is the resolver for the todos field.
 func (r *queryResolver) Todos(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.TodoWhereInput) (*ent.TodoConnection, error) {
-	return r.client.Todo.Query().Paginate(ctx, after, first, before, last, ent.WithTodoOrder(nil), ent.WithTodoFilter(where.Filter))
+	return r.client.Todo.Query().
+		Paginate(ctx, after, first, before, last, ent.WithTodoFilter(where.Filter))
 }
 
 // Users is the resolver for the users field.
 func (r *queryResolver) Users(ctx context.Context, after *entgql.Cursor[int], first *int, before *entgql.Cursor[int], last *int, where *ent.UserWhereInput) (*ent.UserConnection, error) {
-	return r.client.User.Query().Paginate(ctx, after, first, before, last, ent.WithUserOrder(nil), ent.WithUserFilter(where.Filter))
+	return r.client.User.Query().
+		Paginate(ctx, after, first, before, last, ent.WithUserFilter(where.Filter))
 }
 
 // Query returns QueryResolver implementation.

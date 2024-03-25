@@ -10,13 +10,13 @@ import (
 	"net/http"
 	"os"
 
-	"entgo.io/ent/dialect"
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
-	"github.com/ecshreve/backend-playground/ent"
-	playgen "github.com/ecshreve/backend-playground/gqlserver"
+	ent "github.com/ecshreve/backend-playground/ent"
+	gqlserver "github.com/ecshreve/backend-playground/gql_generated"
 
 	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
 )
 
 // TODO: this might not be necessary if not trying to log formatted req body.
@@ -56,27 +56,33 @@ func main() {
 	slog.SetDefault(loglogger)
 	slog.Info("Starting gqlserver...")
 
-	host := os.Getenv("POSTGRES_HOST")
-	port := os.Getenv("POSTGRES_PORT")
-	user := os.Getenv("POSTGRES_USER")
-	pass := os.Getenv("POSTGRES_PASS")
-	dbname := os.Getenv("POSTGRES_DB")
+	// host := os.Getenv("POSTGRES_HOST")
+	// port := os.Getenv("POSTGRES_PORT")
+	// user := os.Getenv("POSTGRES_USER")
+	// pass := os.Getenv("POSTGRES_PASS")
+	// dbname := os.Getenv("POSTGRES_DB")
 
-	// TODO: include missing env vars in error message
-	// or just do this better
-	if host == "" || port == "" || user == "" || pass == "" || dbname == "" {
-		slog.Error("Missing required environment variables")
-		os.Exit(1)
-	}
+	// // TODO: include missing env vars in error message
+	// // or just do this better
+	// if host == "" || port == "" || user == "" || pass == "" || dbname == "" {
+	// 	slog.Error("Missing required environment variables")
+	// 	os.Exit(1)
+	// }
 
-	// Connect to the database
-	postgresConnStr := "host=" + host + " port=" + port + " user=" + user + " dbname=" + dbname + " password=" + pass + " sslmode=disable"
-	client, err := ent.Open(dialect.Postgres, postgresConnStr)
+	// // Connect to the database
+	// postgresConnStr := "host=" + host + " port=" + port + " user=" + user + " dbname=" + dbname + " password=" + pass + " sslmode=disable"
+	// client, err := ent.Open(dialect.Postgres, postgresConnStr)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// slog.Info("Connected to database at", "host", host, "port", port)
+
+	// Initialize an ent client.
+	client, err := ent.Open("sqlite3", "file:dev.db?cache=shared&_fk=1")
 	if err != nil {
-		log.Fatal(err)
+		log.Fatalf("failed opening connection to sqlite: %v", err)
 	}
-	slog.Info("Connected to database at", "host", host, "port", port)
-
+	defer client.Close()
 	// Run the auto migration tool
 	slog.Info("Running schema migration")
 	if err := client.Schema.Create(context.Background()); err != nil {
@@ -86,7 +92,7 @@ func main() {
 	slog.Info("Schema migration complete")
 
 	// Set up simple HTTP handler
-	srv := handler.NewDefaultServer(playgen.NewSchema(client))
+	srv := handler.NewDefaultServer(gqlserver.NewSchema(client))
 	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Hello, playground")
 	})
