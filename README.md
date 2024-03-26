@@ -9,17 +9,16 @@ This repo is a playground for backend development.
 	- Ubuntu 22.04 [devcontainer](https://code.visualstudio.com/docs/devcontainers/containers) with Golang 1.22, Docker 24.0.9-1, Docker Compose 2.25.0-1
 	- Based on the `base:ubuntu-22.04` devcontainer image: `mcr.microsoft.com/devcontainers/base:jammy`
 	- Host docker socket accessible from the devcontainer via the docker-outside-of-docker feature.
-- `User` and `Todo` models defined in `ent/schema`, basic CRUD operations generated.
-- Database migrations via Ent [automatic migration](https://entgo.io/docs/versioned/intro#automatic-migration).
+- Models defined in `ent/schema`, basic CRUD operations generated.
+- Database migrations via Ent [versioned migration](https://entgo.io/docs/versioned/intro#automatic-migration).
 - GraphQL API generated from the Ent schema using the [entgql](https://entgo.io/contrib/entgql) extension.
-- gRPC API generated from the Ent schema using the [entgrpc](https://entgo.io/contrib/entproto) extension.
+- gRPC API generated from the Ent schema using the [entproto](https://entgo.io/contrib/entproto) extension.
 
 ## Roadmap
 - [ ] Enable GraphQL mutations for User and Todo, write tests
-- [ ] Add a `ProfileImage` field on the `User` model
+- [x] Add a ~~`ProfileImage`~~`AvatarImageUrl` field on the `User` model
     - [ ] Spin up LocalStack S3 for image storage
 - [ ] Add Codespaces notes
-- [ ] Audit tasks.toml and update the README
 - [ ] Rework app configuration, move external configs to folder, and app config to a TOML or YAML file
 - [ ] Figure out a way to log / monitor the graphql requests better.
 - [ ] Add custom slog handler with formatting and colors, I have this somewhere just need to find it.
@@ -29,6 +28,7 @@ This repo is a playground for backend development.
 - [?] Dockerize everything
 - [?] Iterate on prebuilding the devcontainer image, what's the best way to do that
 ---
+- [x] Audit tasks.toml, docker compose, and update the README
 - [x] Look at versioned migrations
 - [x] Move grpcserver back over to Postgres
 - [x] Audit `dev` run task and record demo
@@ -48,10 +48,9 @@ This repo is a playground for backend development.
 
 ## Development Commands
 
-- `docker compose up -d` to start the docker services (Postgres, Adminer, Loki, Grafana, ...)
 - `./scripts/setup.sh` to install tools (TODO: move this into devcontainer setup)
 - `./scripts/gencom.sh` to generate a commit message based on the changes staged for commit
-- `go run -mod=mod entgo.io/ent/cmd/ent new <MODEL_NAME>` to generate a new model
+- `run dockerdb` to start the database in a Docker container
 - `run dev` to start the dev server and watch for changes
 
 ### `run`
@@ -69,6 +68,8 @@ Here's a screenshot of the `run dev` output:
 ## Ent
 
 Ent is a Go ORM that generates database models and migrations from a schema. It is used to define the database schema and generate Go code for the models. Additional extensions are used in this project to generate a GraphQL API and gRPC service from the schema.
+
+It's very easy to add a new model: `go run -mod=mod entgo.io/ent/cmd/ent new <MODEL_NAME>`
 
 ### Database Schema and Migrations
 

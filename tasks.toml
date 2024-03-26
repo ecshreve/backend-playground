@@ -172,3 +172,35 @@
     --url $POSTGRES_URL \
     --auto-approve
   """
+
+
+# ------------------------------------------------------------------------------
+#     Docker Tasks
+# ------------------------------------------------------------------------------
+[[task]]
+  id = "dockerdb"
+  type = "short"
+  cmd = """
+  docker compose -f docker-compose.yml up -d 
+  """
+
+[[task]]
+  id = "dockerdb-down"
+  type = "short"
+  cmd = """
+  docker compose -f docker-compose.yml down
+  """
+
+[[task]]
+  id = "dockermonitoring"
+  type = "short"
+  cmd = """
+  docker compose -f docker-monitoring-compose.yml up -d
+  """
+
+[[task]]
+  id = "dockermonitoring-down"
+  type = "short"
+  cmd = """
+  docker compose -f docker-monitoring-compose.yml down
+  """
